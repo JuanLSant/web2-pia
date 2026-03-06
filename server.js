@@ -18,7 +18,8 @@ const db = mysql.createConnection({
 });
 
 app.post('/login', (req, res) => {
-    console.log("Datos recibidos:", req.body);
+    //pruebas pruebas
+    //console.log("Datos recibidos:", req.body);
 
 
     const { username, password } = req.body;

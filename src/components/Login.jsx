@@ -1,12 +1,5 @@
 import { useState } from 'react';
 
-// database pruebas
-const users = [
-    {username: 'admin', email: 'admin@gmail.com', password: '12345'},
-    {username: 'user1', email: 'user1@gmail.com', password: '23456'},
-    {username: 'user2', email: 'user2@gmail.com', password: '34567'},
-    {username: 'user3', email: 'user3@gmail.com', password: '45678'},
-]
 
 function Login({setUser}){
     const [username, setUsername] = useState("");
