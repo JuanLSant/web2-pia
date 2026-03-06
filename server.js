@@ -10,9 +10,9 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', 
+    password: '12345', 
     database: 'mundial_mexico',
-    port: 3307 
+    port: 3306 
 });
 
 db.connect((err) => {
