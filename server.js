@@ -12,9 +12,24 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', 
+    password: '12345', 
     database: 'mundial_mexico',
-    port: 3307
+    port: 3306
+});
+
+db.connect((err) => {
+    if (err) {
+        console.error("Error al conectar a la BD:", err.message);
+        return;
+    }
+    console.log("Conexión exitosa a MySQL");
+});
+
+app.get('/login', (req, res) => {
+    db.query('SELECT 1', (err) => {
+        if (err) return res.status(500).json({ status: "Sin conexión", error: err.message });
+        return res.json({ status: "BD conectada correctamente" });
+    });
 });
 
 app.post('/login', (req, res) => {
