@@ -1,0 +1,82 @@
+import { useState } from 'react';
+import './registro.css'; 
+
+function Registro({ setEsRegistro }) {
+    const [nombre, setNombre] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
+
+    const manejarRegistro = (e) => {
+        e.preventDefault();
+
+       
+        if (nombre === "" || email === "" || password === "") {
+            setError(true);
+            setErrorMessage("Todos los campos son obligatorios");
+            return;
+        }
+
+        if (!email.includes("@")) {
+            setError(true);
+            setErrorMessage("Por favor ingresa un correo válido");
+            return;
+        }
+
+        
+        console.log("Usuario registrado:", { nombre, email, password });
+        
+        alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
+        setEsRegistro(false); 
+    };
+
+    return (
+        <div className="login-container">
+            <h1 className="login-title">Crear Cuenta</h1>
+            
+            <form className="login-form" onSubmit={manejarRegistro}>
+                <input 
+                    className="login-input"
+                    type='text' 
+                    placeholder='Nombre completo' 
+                    value={nombre} 
+                    onChange={(e) => setNombre(e.target.value)} 
+                />
+
+                <input 
+                    className="login-input"
+                    type='email' 
+                    placeholder='Correo electrónico' 
+                    value={email} 
+                    onChange={(e) => setEmail(e.target.value)} 
+                />
+
+                <input 
+                    className="login-input"
+                    type='password' 
+                    placeholder='Contraseña' 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                />
+
+                <button className="login-button" type='submit'>
+                    Registrarse
+                </button>
+
+                {error && <p className="login-error">{errorMessage}</p>}
+
+                <p style={{ color: 'white', textAlign: 'center', marginTop: '10px', fontSize: '0.9rem' }}>
+                    ¿Ya tienes cuenta? 
+                    <span 
+                        onClick={() => setEsRegistro(false)}
+                    >
+                        Inicia sesión
+                    </span>
+                </p>
+            </form>
+        </div>
+    );
+}
+
+export default Registro;

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-
+import './login.css'
 // database pruebas
 const users = [
     {username: 'admin', email: 'admin@gmail.com', password: '12345'},
@@ -44,26 +44,37 @@ function Login({setUser}){
         setPassword("");
     };
 
-    return (
-        <>
-            <h1>Login</h1>
-            <form action="" onSubmit={validardatos}>
-                <input type='text' placeholder='Username' 
-                    value={username} onChange={(e) => setUsername (e.target.value)} 
-                    name='username'>
-                </input>
+    return  (
+        <div className="login-container">
+            <h1 className="login-title">Login</h1>
+            <form className="login-form" onSubmit={validardatos}>
+                <input 
+                    className="login-input"
+                    type='text' 
+                    placeholder='Username' 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                    name='username'
+                />
 
-                <input type='password' placeholder='Password' 
-                    value={password} onChange={(e) => setPassword (e.target.value)} 
-                    name='password'>
-                </input>
+                <input 
+                    className="login-input"
+                    type='password' 
+                    placeholder='Password' 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    name='password'
+                />
 
-                <button type='submit'>Login</button>
-                {error && <p>{errorMessage}</p>}
-
+                <button className="login-button" type='submit'>
+                    Ingresar
+                </button>
+                
+                {error && <p className="login-error">{errorMessage}</p>}
             </form>
-        </>
+        </div>
     )
+    
 }
 
 export default Login;

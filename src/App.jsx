@@ -1,5 +1,6 @@
 import Login from './components/Login'
 import Welcome from './components/Bienvenido-test'
+import Registro from './components/Registro'
 import { useState } from 'react'
 import './App.css'
 
