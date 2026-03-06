@@ -8,7 +8,7 @@ const users = [
     {username: 'user3', email: 'user3@gmail.com', password: '45678'},
 ]
 
-function Login({setUser}){
+function Login({setUser, setEsRegistro}){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
@@ -69,7 +69,11 @@ function Login({setUser}){
                 <button className="login-button" type='submit'>
                     Ingresar
                 </button>
+
                 
+                <span onClick={() => setEsRegistro(true)}>
+                Registrarse
+                </span>
                 {error && <p className="login-error">{errorMessage}</p>}
             </form>
         </div>

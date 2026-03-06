@@ -110,3 +110,16 @@
     margin-top: 10px;
     border: 1px solid rgba(255, 138, 138, 0.3);
 }
+
+.login-form span {
+    color: #38f9d7;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 5px;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.login-form span:hover {
+    color: #43e97b;
+}
