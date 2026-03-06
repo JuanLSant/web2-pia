@@ -1,0 +1,22 @@
+ /* diseño del span link */
+.auth-link {
+    color: #38f9d7;
+    cursor: pointer;
+    font-weight: 600;
+    margin-left: 5px;
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.auth-link-SN-text:hover {
+    color: #43e97b;
+}
+
+ /* diseño del texto p link */
+
+ .auth-link-Text {
+    color: white;
+    font-size: 0.9rem;
+    text-align: center;
+    margin-top: 10px;
+ }

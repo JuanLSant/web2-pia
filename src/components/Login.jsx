@@ -8,7 +8,7 @@ const users = [
     {username: 'user3', email: 'user3@gmail.com', password: '45678'},
 ]
 
-function Login({setUser}){
+function Login({setUser, setEsRegistro}){
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
@@ -44,26 +44,41 @@ function Login({setUser}){
         setPassword("");
     };
 
-    return (
-        <>
-            <h1>Login</h1>
-            <form action="" onSubmit={validardatos}>
-                <input type='text' placeholder='Username' 
-                    value={username} onChange={(e) => setUsername (e.target.value)} 
-                    name='username'>
-                </input>
+    return  (
+        <div className="index-background">
+            <h1 className="title-1">Login</h1>
+            <form className="form-index" onSubmit={validardatos}>
+                <input 
+                    className="input-index"
+                    type='text' 
+                    placeholder='Username' 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
+                    name='username'
+                />
 
-                <input type='password' placeholder='Password' 
-                    value={password} onChange={(e) => setPassword (e.target.value)} 
-                    name='password'>
-                </input>
+                <input 
+                    className="input-index"
+                    type='password' 
+                    placeholder='Password' 
+                    value={password} 
+                    onChange={(e) => setPassword(e.target.value)} 
+                    name='password'
+                />
 
-                <button type='submit'>Login</button>
-                {error && <p>{errorMessage}</p>}
+                <button className="button-index" type='submit'>
+                    Ingresar
+                </button>
 
+                {error && <p className="error-message">{errorMessage}</p>}
+
+                <span className='auth-link' onClick={() => setEsRegistro(true)}>
+                Registrarse
+                </span>
             </form>
-        </>
+        </div>
     )
+    
 }
 
 export default Login;
