@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '/src/styles/login.css';
+
 // database pruebas
 const users = [
     {username: 'admin', email: 'admin@gmail.com', password: '12345'},
@@ -45,11 +45,11 @@ function Login({setUser, setEsRegistro}){
     };
 
     return  (
-        <div className="login-container">
-            <h1 className="login-title">Login</h1>
-            <form className="login-form" onSubmit={validardatos}>
+        <div className="index-background">
+            <h1 className="title-1">Login</h1>
+            <form className="form-index" onSubmit={validardatos}>
                 <input 
-                    className="login-input"
+                    className="input-index"
                     type='text' 
                     placeholder='Username' 
                     value={username} 
@@ -58,7 +58,7 @@ function Login({setUser, setEsRegistro}){
                 />
 
                 <input 
-                    className="login-input"
+                    className="input-index"
                     type='password' 
                     placeholder='Password' 
                     value={password} 
@@ -66,15 +66,15 @@ function Login({setUser, setEsRegistro}){
                     name='password'
                 />
 
-                <button className="login-button" type='submit'>
+                <button className="button-index" type='submit'>
                     Ingresar
                 </button>
 
-                
-                <span onClick={() => setEsRegistro(true)}>
+                {error && <p className="error-message">{errorMessage}</p>}
+
+                <span className='auth-link' onClick={() => setEsRegistro(true)}>
                 Registrarse
                 </span>
-                {error && <p className="login-error">{errorMessage}</p>}
             </form>
         </div>
     )

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import '/src/styles/registro.css'; 
+
 
 function Registro({ setEsRegistro }) {
     const [nombre, setNombre] = useState("");
@@ -32,12 +32,12 @@ function Registro({ setEsRegistro }) {
     };
 
     return (
-        <div className="login-container">
-            <h1 className="login-title">Crear Cuenta</h1>
+        <div className="index-background">
+            <h1 className="title-1">Crear Cuenta</h1>
             
-            <form className="login-form" onSubmit={manejarRegistro}>
+            <form className="form-index" onSubmit={manejarRegistro}>
                 <input 
-                    className="login-input"
+                    className="input-index"
                     type='text' 
                     placeholder='Nombre completo' 
                     value={nombre} 
@@ -45,7 +45,7 @@ function Registro({ setEsRegistro }) {
                 />
 
                 <input 
-                    className="login-input"
+                    className="input-index"
                     type='email' 
                     placeholder='Correo electrónico' 
                     value={email} 
@@ -53,22 +53,22 @@ function Registro({ setEsRegistro }) {
                 />
 
                 <input 
-                    className="login-input"
+                    className="input-index"
                     type='password' 
                     placeholder='Contraseña' 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)} 
                 />
 
-                <button className="login-button" type='submit'>
+                <button className="button-index" type='submit'>
                     Registrarse
                 </button>
 
-                {error && <p className="login-error">{errorMessage}</p>}
+                {error && <p className="error-message">{errorMessage}</p>}
 
-                <p style={{ color: 'white', textAlign: 'center', marginTop: '10px', fontSize: '0.9rem' }}>
+                <p className='auth-link-Text'>
                     ¿Ya tienes cuenta? 
-                    <span 
+                    <span className='auth-link' 
                         onClick={() => setEsRegistro(false)}
                     >
                         Inicia sesión

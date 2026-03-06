@@ -1,0 +1,24 @@
+.button-index {
+    width: 100%;
+    padding: 16px;
+    margin-top: 10px;
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); 
+    color: #1a1a1a;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.button-index:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(110, 142, 251, 0.4);
+}
+
+.button-index:active {
+    transform: translateY(0);
+}
