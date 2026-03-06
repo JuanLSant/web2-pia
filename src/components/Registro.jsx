@@ -8,10 +8,9 @@ function Registro({ setEsRegistro }) {
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
 
-    const manejarRegistro = (e) => {
+    const manejarRegistro = async (e) => {
         e.preventDefault();
 
-       
         if (nombre === "" || email === "" || password === "") {
             setError(true);
             setErrorMessage("Todos los campos son obligatorios");
@@ -24,11 +23,27 @@ function Registro({ setEsRegistro }) {
             return;
         }
 
-        
-        console.log("Usuario registrado:", { nombre, email, password });
-        
-        alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
-        setEsRegistro(false); 
+        try {
+            
+            const response = await fetch('http://localhost:8081/registro', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ nombre, email, password })
+            });
+
+            const data = await response.json();
+
+            if (data === "Success") {
+                alert("¡Registro exitoso! Ahora puedes iniciar sesión.");
+                setEsRegistro(false); 
+            } else {
+                setError(true);
+                setErrorMessage("Error al registrar el usuario");
+            }
+        } catch (err) {
+            setError(true);
+            setErrorMessage("No se pudo conectar con el servidor");
+        }
     };
 
     return (
