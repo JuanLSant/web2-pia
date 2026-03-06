@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './registro.css'; 
+import '/src/styles/registro.css'; 
 
 function Registro({ setEsRegistro }) {
     const [nombre, setNombre] = useState("");

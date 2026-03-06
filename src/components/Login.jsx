@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import './login.css'
+import '/src/styles/login.css';
 // database pruebas
 const users = [
     {username: 'admin', email: 'admin@gmail.com', password: '12345'},
