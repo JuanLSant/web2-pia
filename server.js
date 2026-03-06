@@ -17,9 +17,9 @@ const db = mysql.createConnection({
 });
 
 app.post('/login', (req, res) => {
-    const { correo, password } = req.body;
-    const sql = "SELECT * FROM usuarios WHERE correo = ? AND password = ?";
-    db.query(sql, [correo, password], (err, data) => {
+    const { username, password } = req.body;
+    const sql = "SELECT * FROM usuarios WHERE nombre = ? AND password = ?";
+    db.query(sql, [username, password], (err, data) => {
         if(err) return res.json(err);
         if(data.length > 0) return res.json("Success");
         return res.status(401).json({ alerta: "Usuario o contraseña no coinciden" });

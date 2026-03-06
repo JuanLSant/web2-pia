@@ -14,34 +14,34 @@ function Login({setUser}){
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState ("");
 
-    const validardatos = (e) => {
+    const validardatos = async (e) => {
         e.preventDefault();
         if ( username==="" || password==="" ) {
             setError(true);
             setErrorMessage("Los campos se encuentran vacios");
             return;
         }
+        try {
+           // cnexión con el servidor de node.js
+           const response = await fetch('http://localhost:8081/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, password: password })
+        });
 
-        //db -- busca usuario
-        const user = users.find(
-            (u) => u.username === username && u.password === password
-        );
+        const data = await response.json();
 
-        /// usuario activo
-
-        if (user) {
-            setError(false);
-            setUser(username);
+        if (data === "Success") {
+           setError(false);
+           setUser(username); 
+        } else {
+           setError(true);
+           setErrorMessage(data.alerta || "Error en credenciales");
         }
-        /// usuario inactivo
-        else {
-            setError(true);
-            setErrorMessage ("Error en credenciales");
-        }
-
-        // limpiar
-        setUsername("");
-        setPassword("");
+      } catch (err) {
+        setError(true);
+        setErrorMessage("No se pudo conectar con el servidor");
+      }
     };
 
     return (
