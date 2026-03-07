@@ -2,7 +2,8 @@ import Login from './components/Login'
 import Welcome from './components/Bienvenido-test'
 import Registro from './components/Registro'
 import { useState } from 'react'
-import './App.css'
+// import './App.css'
+import './styles/user.css'
 import './styles/backgrounds.css'
 import './styles/forms-container.css'
 import './styles/titles.css'
@@ -13,12 +14,13 @@ import './styles/auth-links.css'
 
 
 function App() {
-  const [user, setUser] = useState([])
-  const [esRegistro, setEsRegistro] = useState(false)
+  const [user, setUser] = useState(null)
+  const [esRegistro, setEsRegistro] = useState(false) 
+  console.log("User actual:", user);
 
   return (
     <>
-      {user.length === 0
+      {user === null
         ? esRegistro
           ? <Registro setEsRegistro={setEsRegistro} setUser={setUser} />
           : <Login setUser={setUser} setEsRegistro={setEsRegistro} />

@@ -32,10 +32,10 @@ app.get('/test-db', (req, res) => {
 
 app.post('/login', (req, res) => {
     const { username, password } = req.body;
-    const sql = "SELECT * FROM usuarios WHERE nombre = ? AND password = ?";
+    const sql = "SELECT id_usuario, nombre, correo FROM usuarios WHERE nombre = ? AND password = ?";
     db.query(sql, [username, password], (err, data) => {
-        if(err) return res.status(500).json(err);
-        if(data.length > 0) return res.json("Success");
+        if (err) return res.status(500).json(err);
+        if (data.length > 0) return res.json({ success: true, usuario: data[0] });
         return res.status(401).json({ alerta: "Usuario o contraseña no coinciden" });
     });
 });

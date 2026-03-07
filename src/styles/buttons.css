@@ -22,3 +22,59 @@
 .button-index:active {
     transform: translateY(0);
 }
+
+
+.button-menu {
+    width: 80%;
+    padding: 3px;
+    margin-top: 10px;
+    background: linear-gradient(135deg, #e9b543 0%, #f9ec38 100%); 
+    color: #1a1a1a;
+    border: none;
+    border-radius: 12px;
+    font-size: .8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.3s;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.button-menu:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(110, 142, 251, 0.4);
+}
+
+.button-menu:active {
+    transform: translateY(0);
+}
+
+.button-menu-2 {
+    background: transparent;
+    border: none;
+    color: #e9b543;
+    font-size: .8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.25s ease;
+}
+
+.button-menu-2::after {
+    content: '';
+    position: absolute;
+    bottom: 0; left: 50%;
+    width: 0; height: 1px;
+    background: #f9ec38;
+    transition: width 0.3s ease, left 0.3s ease;
+}
+
+.button-menu-2:hover {
+    color: #f9ec38; 
+}
+
+.button-menu-2:hover::after {
+    width: 100%; left: 0; 
+}
