@@ -49,6 +49,16 @@ app.post('/registro', (req, res) => {
     });
 });
 
+app.put('/usuario/:id', (req, res) => {
+    const { id } = req.params;
+    const { nombre, password } = req.body;
+    const sql = "UPDATE usuarios SET nombre = ?, password = ? WHERE id_usuario = ?";
+    db.query(sql, [nombre, password, id], (err) => {
+        if (err) return res.status(500).json({ error: "Error al actualizar usuario" });
+        return res.json({ success: true });
+    });
+});
+
 app.listen(8081, () => {
     console.log("Servidor escuchando en el puerto 8081");
 });
