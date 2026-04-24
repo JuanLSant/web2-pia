@@ -45,6 +45,7 @@ function App() {
   }
  
   if (page === 'perfil') return <Welcome user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'asientos') return <SeleccionAsientos user={user} setUser={handleSetUser} setPage={handleSetPage} />
   return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} />
 }
  
