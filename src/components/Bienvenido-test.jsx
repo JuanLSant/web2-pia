@@ -35,7 +35,7 @@ const handleGuardar = () => {
 
     return (
         <div className="background-page">
-            <footer className='bar-menu'>
+           <footer className='bar-menu'>
                 <div className="bar-space"></div>
                 <div className="bar-boton-section">
                     <button className='button-menu-2'>Inicio</button>
@@ -44,7 +44,13 @@ const handleGuardar = () => {
                     <button className='button-menu-2'>Mi perfil</button>
                 </div>
                 <div className="bar-boton-section">
-                    <button className='button-menu'>Iniciar sesión</button>
+                    {user ? (
+                        <div className="avatar-menu" title={user.nombre}>
+                            {user.nombre.charAt(0).toUpperCase()}
+                        </div>
+                    ) : (
+                        <button className='button-menu'>Iniciar sesión</button>
+                    )}
                 </div>
             </footer>
             <div className="container-content-dashboard">
