@@ -41,9 +41,9 @@ function Inicio({ user, setUser, setPage }) {
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">
-                                    {/* <button className="dropdown-item" onClick={() => { setPage('perfil'); setDropdownOpen(false); }}>
-                                        Mi perfil
-                                    </button> */}
+                                    <button className="dropdown-item" onClick={() => { setPage('asientos'); setDropdownOpen(false); }}>
+                                        asientos
+                                    </button>
                                     <button className="dropdown-item danger" onClick={handleCerrarSesion}>
                                         Cerrar sesión
                                     </button>
