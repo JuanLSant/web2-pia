@@ -3,9 +3,15 @@ import { useState } from 'react';
 const SeleccionAsientos = () => {
     // Datos de ejemplo: 'L' = Libre, 'O' = Ocupado
     const [mapa, setMapa] = useState([
-        ['L', 'L', 'O', 'L', 'L'],
-        ['L', 'O', 'O', 'L', 'L'],
-        ['L', 'L', 'L', 'L', 'L'],
+        ['L', 'L', 'O', 'L', 'L', 'L', 'L', 'L', 'O', 'L', 'L', 'L'],
+        ['O', 'O', 'L', 'L', 'L', 'L', 'O', 'L', 'L', 'L', 'L', 'L'],
+        ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'O', 'O'],
+        ['O', 'L', 'L', 'L', 'O', 'O', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['L', 'L', 'O', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['L', 'O', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+        ['L', 'L', 'L', 'L', 'L', 'L', 'O', 'O', 'O', 'L', 'L', 'L'],
+        
     ]);
 
     const [seleccionados, setSeleccionados] = useState([]);
