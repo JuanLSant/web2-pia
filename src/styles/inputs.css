@@ -20,28 +20,3 @@
     box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
 }
 
-.input-asiento-oculto {
-    display: none;
-}
-
-.asiento-visual {
-    display: block;
-    width: 30px;
-    height: 30px;
-    background-color: #ffffff; 
-    border-radius: 4px;
-    cursor: pointer;
-    transition: 0.3s;
-}
-
-.input-asiento-oculto:checked + .asiento-visual {
-    background-color: #f39c12; 
-    box-shadow: 0 0 10px #f39c12;
-    transform: scale(1.1);
-}
-
-.asiento-visual.asiento-ocupado {
-    background-color: #222;
-    cursor: not-allowed;
-    opacity: 0.8;
-}
