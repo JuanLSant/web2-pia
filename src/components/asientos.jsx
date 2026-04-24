@@ -11,13 +11,14 @@ const SeleccionAsientos = () => {
     const [seleccionados, setSeleccionados] = useState([]);
     const precio = 5000;
 
-    const manejarCambio = (fila, col) => {
-        const id = `${fila}-${col}`;
-        if (seleccionados.includes(id)) {
-            // Si ya estaba, lo quitamos (Deseleccionar)
-            setSeleccionados(seleccionados.filter(item => item !== id));
-        } 
-    };
+const manejarCambio = (fila, col) => {
+    const id = `${fila}-${col}`;
+    if (seleccionados.includes(id)) {
+        setSeleccionados(seleccionados.filter(item => item !== id));
+    } else {
+        setSeleccionados([...seleccionados, id]);
+    }
+};
 
     return (
         <div className="index-background">
