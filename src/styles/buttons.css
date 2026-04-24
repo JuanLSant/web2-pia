@@ -1,12 +1,12 @@
 .button-index {
     width: 100%;
-    padding: 16px;
+    padding: clamp(10px, 1.5vh, 16px) clamp(8px, 1.5vw, 16px);
     margin-top: 10px;
-    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); 
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
     color: #1a1a1a;
     border: none;
     border-radius: 12px;
-    font-size: 1.1rem;
+    font-size: clamp(0.8rem, 1.8vw, 1.1rem);
     font-weight: 600;
     cursor: pointer;
     transition: transform 0.2s, box-shadow 0.3s;
