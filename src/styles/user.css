@@ -193,3 +193,113 @@
 .avatar-menu:hover {
     opacity: 0.85;
 }
+
+.avatar-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background-color: #222222;
+    border: 1px solid #333333;
+    border-radius: 8px;
+    padding: 6px 0;
+    min-width: 140px;
+    z-index: 100;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+}
+
+.dropdown-item {
+    width: 100%;
+    padding: 8px 16px;
+    background: none;
+    border: none;
+    color: whitesmoke;
+    font-size: clamp(12px, 1vw, 14px);
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.dropdown-item:hover {
+    background-color: #333333;
+}
+
+.dropdown-item.danger {
+    color: #e50000;
+}
+
+.dropdown-item.danger:hover {
+    background-color: #2a1010;
+}
+
+
+@media (max-width: 768px) {
+    .container-content-dashboard {
+        flex-direction: column;
+        align-items: center;
+        justify-content: start;
+        overflow-y: auto;
+        gap: 0;
+        padding: clamp(12px, 2vh, 24px) 0;
+    }
+
+    .section-left {
+        width: 90%;
+        height: auto;
+        justify-content: center;
+        flex-shrink: 0;
+    }
+
+    .form-datauser {
+        width: 100%;
+        max-height: none;
+        gap: clamp(10px, 2vh, 24px);
+        padding: clamp(12px, 2vh, 24px) 0;
+    }
+
+    .section-top-center {
+        margin-top: clamp(10px, 1.5vh, 20px);
+    }
+
+    .container-image {
+        width: clamp(70px, 18vw, 110px);
+        height: clamp(70px, 18vw, 110px);
+    }
+
+    .section-middle-center {
+        width: 80%;
+        gap: clamp(8px, 1.2vh, 16px);
+    }
+
+    .section-botton-center {
+        margin-bottom: clamp(12px, 2vh, 24px);
+    }
+
+    .section-right {
+        width: 90%;
+        height: auto;
+        margin-top: clamp(16px, 3vh, 32px);
+        padding-bottom: clamp(16px, 3vh, 32px);
+        flex-shrink: 0;
+    }
+
+    .section-top {
+        height: auto;
+        padding: clamp(8px, 1.5vh, 16px) 0 clamp(6px, 1vh, 12px) clamp(10px, 2vw, 20px);
+    }
+
+    .section-botton {
+        height: clamp(260px, 38vh, 460px);
+        overflow-y: auto;
+    }
+
+    .tarjeta-banner {
+        height: clamp(90px, 14vh, 160px);
+    }
+}
