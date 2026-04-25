@@ -36,7 +36,7 @@ app.post('/login', (req, res) => {
 
     //console.log("Intentando login con:", username, password);
     
-    const sql = "SELECT * FROM usuarios WHERE nombre = ? AND password = ?";
+    const sql = "SELECT * FROM users WHERE username = ? AND password = ?";
     
     db.query(sql, [username, password], (err, data) => {
         console.log("Resultado de la base de datos:", data);
@@ -50,25 +50,51 @@ app.post('/login', (req, res) => {
     });
 });
 
-app.post('/registro', (req, res) => {
-    const { nombre, email, password } = req.body;
-    const sql = "INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)";
-    db.query(sql, [nombre, email, password], (err, result) => {
-        if(err) return res.status(500).json({ error: "Error al registrar usuario" });
+app.post('/register', (req, res) => { 
+    const { username, email, password } = req.body;
+    const sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+    db.query(sql, [username, email, password], (err, result) => {
+        if(err) {
+            console.log(err); 
+            return res.status(500).json({ error: "Error al registrar usuario" });
+        }
         return res.json("Success");
     });
 });
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/users/:id', (req, res) => { 
     const { id } = req.params;
-    const { nombre, password } = req.body;
-    const sql = "UPDATE usuarios SET nombre = ?, password = ? WHERE id_usuario = ?";
-    db.query(sql, [nombre, password, id], (err) => {
-        if (err) return res.status(500).json({ error: "Error al actualizar usuario" });
+    const { username, password } = req.body; 
+    const sql = "UPDATE users SET username = ?, password = ? WHERE id_user = ?";
+    
+    db.query(sql, [username, password, id], (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Error al actualizar usuario" });
+        }
         return res.json({ success: true });
     });
 });
 
 app.listen(8081, () => {
     console.log("Servidor escuchando en el puerto 8081");
+});
+
+app.post('/simulate-wallet', (req, res) => {
+    const { id_user, total, id_match, seat_number } = req.body;
+    const sqlSale = "INSERT INTO sales (id_user, id_method, total) VALUES (?, 1, ?)";
+    
+    db.query(sqlSale, [id_user, total], (err, saleResult) => {
+        if (err) return res.status(500).json(err);
+        
+        const id_sale = saleResult.insertId;
+        const qr_mock = `TICKET-${id_match}-${id_sale}-${seat_number}`;
+
+        const sqlTicket = "INSERT INTO tickets (id_sale, id_match, seat_number, qr_code) VALUES (?, ?, ?, ?)";
+        
+        db.query(sqlTicket, [id_sale, id_match, seat_number, qr_mock], (err) => {
+            if (err) return res.status(500).json(err);
+            res.json({ success: true, message: "Boleto generado en la Wallet" });
+        });
+    });
 });

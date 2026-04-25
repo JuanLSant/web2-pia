@@ -24,7 +24,7 @@ function Login({setUser, setEsRegistro}){
 
         const data = await response.json();
 
-        if (data.nombre) {
+        if (data.username) {
            setError(false);
            setUser(data); 
         } else {

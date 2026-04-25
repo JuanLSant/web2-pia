@@ -1,8 +1,8 @@
 import { useState } from 'react';
 
-
 function Registro({ setEsRegistro }) {
-    const [nombre, setNombre] = useState("");
+    
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
@@ -11,7 +11,8 @@ function Registro({ setEsRegistro }) {
     const manejarRegistro = async (e) => {
         e.preventDefault();
 
-        if (nombre === "" || email === "" || password === "") {
+        
+        if (username === "" || email === "" || password === "") {
             setError(true);
             setErrorMessage("Todos los campos son obligatorios");
             return;
@@ -25,10 +26,10 @@ function Registro({ setEsRegistro }) {
 
         try {
             
-            const response = await fetch('http://localhost:8081/registro', {
+            const response = await fetch('http://localhost:8081/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre, email, password })
+                body: JSON.stringify({ username, email, password })
             });
 
             const data = await response.json();
@@ -54,15 +55,15 @@ function Registro({ setEsRegistro }) {
                 <input 
                     className="input-index"
                     type='text' 
-                    placeholder='Nombre completo' 
-                    value={nombre} 
-                    onChange={(e) => setNombre(e.target.value)} 
+                    placeholder='Username' 
+                    value={username} 
+                    onChange={(e) => setUsername(e.target.value)} 
                 />
 
                 <input 
                     className="input-index"
                     type='email' 
-                    placeholder='Correo electrónico' 
+                    placeholder='Email' 
                     value={email} 
                     onChange={(e) => setEmail(e.target.value)} 
                 />
@@ -70,7 +71,7 @@ function Registro({ setEsRegistro }) {
                 <input 
                     className="input-index"
                     type='password' 
-                    placeholder='Contraseña' 
+                    placeholder='Password' 
                     value={password} 
                     onChange={(e) => setPassword(e.target.value)} 
                 />
