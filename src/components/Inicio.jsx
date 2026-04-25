@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
  
-function Inicio({ user, setUser, setPage }) {
+function Inicio({ user, setUser, setPage, setSelectedMatch }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
  
@@ -63,7 +63,7 @@ function Inicio({ user, setUser, setPage }) {
                     <div className="container-banner-ini-p"></div>
                     <div className="section-banner-ini">
 
-                        <div className="tarjeta-banner" onClick={() => setPage('zona')}>
+                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/suecia.jpg', flagRight: 'src/assets/Tunez.jpg', fecha: '14 de Junio (8:00 pm)' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/suecia.jpg' />
@@ -81,7 +81,7 @@ function Inicio({ user, setUser, setPage }) {
                             </div>
                         </div>
                         
-                        <div className="tarjeta-banner" onClick={() => setPage('zona')}>
+                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/Tunez.jpg', flagRight: 'src/assets/Japon.png', fecha: '20 de Junio (8:00 pm)' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/Tunez.jpg' />
@@ -98,7 +98,7 @@ function Inicio({ user, setUser, setPage }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="tarjeta-banner" onClick={() => setPage('zona')}>
+                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/sudafrica.png', flagRight: 'src/assets/sur corea.jpg', fecha: '24 de Junio (8:00 pm)' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/sudafrica.png' />
