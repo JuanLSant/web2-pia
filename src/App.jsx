@@ -16,7 +16,7 @@ import './styles/buttons.css'
 import './styles/error-message.css'
 import './styles/auth-links.css'
 import './styles/inicio.css'
- 
+
 function App() {
   const [user, setUser] = useState(() => {
     const guardado = localStorage.getItem('usuario')
@@ -26,7 +26,8 @@ function App() {
   const [page, setPage] = useState(() => {
     return localStorage.getItem('page') || 'inicio'
   })
- 
+  const [selectedMatch, setSelectedMatch] = useState(null) // 👈 nuevo estado
+
   const handleSetUser = (nuevoUsuario) => {
     if (nuevoUsuario) {
       localStorage.setItem('usuario', JSON.stringify(nuevoUsuario))
@@ -36,23 +37,23 @@ function App() {
     }
     setUser(nuevoUsuario)
   }
- 
+
   const handleSetPage = (nuevaPagina) => {
     localStorage.setItem('page', nuevaPagina)
     setPage(nuevaPagina)
   }
- 
+
   if (user === null) {
     return esRegistro
       ? <Registro setEsRegistro={setEsRegistro} setUser={handleSetUser} />
       : <Login setUser={handleSetUser} setEsRegistro={setEsRegistro} />
   }
- 
-if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
-if (page === 'wallet') return <Wallet user={user} setUser={handleSetUser} setPage={handleSetPage} />
-if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
-if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} />
-return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} />
+
+  if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} /> // 👈
+  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={setSelectedMatch} /> // 👈
 }
- 
+
 export default App

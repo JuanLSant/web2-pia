@@ -120,3 +120,146 @@
     border-radius: clamp(4px, 0.5vw, 8px);
     padding: clamp(3px, 0.5vh, 6px) clamp(6px, 1vw, 12px);
 }
+
+
+.container-cols-zone {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    gap: clamp(10px, 1.5vw, 20px);
+
+    position: relative;
+    z-index: 10;
+}
+
+.container-cols-zone {
+    width: 100%;
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center; 
+    align-items: flex-start;
+    gap: clamp(10px, 1.5vw, 20px);
+    overflow: visible;
+    position: relative;
+    z-index: 10;
+    padding-top: clamp(20px, 3vh, 50px); 
+}
+
+.container-izq-zone {
+    width: clamp(340px, 25vw, 420px);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(10px, 1.5vh, 20px);
+    overflow: visible;
+    padding: 0 clamp(20px, 3vw, 50px);
+    padding-left: clamp(40px, 5vw, 80px); 
+}
+
+.container-der-zone {
+    flex: 1;
+    align-self: stretch;
+    
+    border-radius: clamp(8px, 1vw, 15px);
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
+}
+
+.lado-izquierdo {
+    width: 70%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+}
+
+.arriba-E {
+    height: 10%;
+
+}
+
+.medio-E {
+    height: 70%;
+
+}
+
+.abajo-E {
+    height: 20%;
+
+}
+
+.lado-derecho {
+    width: 30%;
+    height: 100%;
+    
+}
+
+@media (max-width: 768px) {
+    .container-izq-zone {
+        display: none;
+    }
+}
+
+.lado-derecho-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    gap: clamp(6px, 1vh, 14px);
+    padding: clamp(12px, 2vh, 24px) clamp(10px, 1.5vw, 20px);
+    height: 100%;
+    box-sizing: border-box;
+}
+
+.zona-ref {
+    width: clamp(100px, 12vw, 200px);
+    height: clamp(100px, 12vw, 200px);
+    border-radius: clamp(8px, 1vw, 15px);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.zona-ref img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.nombre-de-zona {
+    font-size: clamp(16px, 2vw, 26px);
+    margin: 0;
+    text-align: center;
+}
+
+.nombre-de-area {
+    font-size: clamp(13px, 1.5vw, 20px);
+    margin: 0;
+    text-align: center;
+}
+
+.espacios-disp {
+    font-size: clamp(11px, 1.2vw, 16px);
+    margin: 0;
+    text-align: center;
+}
+
+.costo-z {
+    font-size: clamp(11px, 1.2vw, 16px);
+    margin: 0;
+    text-align: center;
+}
+
+.lado-derecho-footer {
+    margin-top: auto; /* ← empuja el botón hasta abajo */
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    padding-bottom: clamp(10px, 2vh, 20px);
+}
