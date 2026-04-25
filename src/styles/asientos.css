@@ -168,3 +168,10 @@
     cursor: not-allowed;
     color: #9ca3af;
 }
+
+.detalle {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 15px;
+    margin-bottom: 10px;
+}
