@@ -141,66 +141,110 @@
     min-height: 0;
     display: flex;
     flex-direction: row;
-    justify-content: center; 
+    justify-content: center;
     align-items: flex-start;
-    gap: clamp(10px, 1.5vw, 20px);
+    gap: clamp(8px, 1.2vw, 16px);
     overflow: visible;
     position: relative;
     z-index: 10;
-    padding-top: clamp(20px, 3vh, 50px); 
+    padding-top: clamp(10px, 2vh, 30px);
 }
-
 .container-izq-zone {
-    width: clamp(340px, 25vw, 420px);
+    width: clamp(220px, 20vw, 340px); /* más angosta */
     flex-shrink: 0;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: clamp(10px, 1.5vh, 20px);
-    overflow: visible;
-    padding: 0 clamp(20px, 3vw, 50px);
-    padding-left: clamp(40px, 5vw, 80px); 
+    gap: clamp(8px, 1vh, 16px);
+    padding: 0 clamp(12px, 2vw, 30px);
 }
 
 .container-der-zone {
     flex: 1;
     align-self: stretch;
-    
+    height: clamp(380px, 55vh, 620px); /* ← altura controlada */
     border-radius: clamp(8px, 1vw, 15px);
     display: flex;
     flex-direction: row;
     overflow: hidden;
 }
 
-.lado-izquierdo {
-    width: 70%;
-    height: 100%;
 
+.lado-izquierdo {
+    width: 65%;
+    height: 100%;
     display: flex;
     flex-direction: column;
+    padding: 0 clamp(8px, 1vw, 16px);
 }
 
 .arriba-E {
-    height: 10%;
-
+    height: 5%;  /* era 10% */
+    flex-shrink: 0;
 }
 
 .medio-E {
-    height: 70%;
-
+    height: 60%; /* era 70% — reduce la cancha */
+    max-height: clamp(200px, 35vh, 400px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
 }
 
-
+.medio-E svg {
+    width: 100%;
+    height: 100%;
+    max-height: 100%;
+}
 
 .lado-derecho {
-    width: 30%;
+    width: 35%;
     height: 100%;
-    
+    overflow-y: auto;
 }
+
 
 @media (max-width: 768px) {
     .container-izq-zone {
         display: none;
+    }
+}
+
+@media (min-width: 1440px) {
+    .container-der-zone {
+        height: clamp(450px, 52vh, 600px);
+    }
+    .medio-E {
+        max-height: 380px;
+    }
+}
+
+@media (max-width: 1024px) {
+    .container-cols-zone {
+        flex-direction: column;
+        align-items: center;
+        padding-top: clamp(8px, 1.5vh, 20px);
+        overflow-y: auto;
+    }
+    .container-der-zone {
+        width: 95%;
+        height: clamp(320px, 50vh, 500px);
+    }
+    .container-izq-zone {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .lado-derecho {
+        width: 40%;
+    }
+    .lado-izquierdo {
+        width: 60%;
+    }
+    .container-der-zone {
+        height: clamp(280px, 45vh, 400px);
     }
 }
 
@@ -216,11 +260,12 @@
 }
 
 .zona-ref {
-    width: clamp(100px, 12vw, 200px);
-    height: clamp(100px, 12vw, 200px);
+    width: clamp(80px, 9vw, 150px);
+    height: clamp(80px, 9vw, 150px);
     border-radius: clamp(8px, 1vw, 15px);
     overflow: hidden;
     flex-shrink: 0;
+    background: #1a1a1a;
 }
 
 .zona-ref img {
