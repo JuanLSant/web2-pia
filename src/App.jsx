@@ -1,7 +1,11 @@
 import Login from './components/Login'
-import Welcome from './components/User'
+import User from './components/User'
 import Registro from './components/Registro'
 import Inicio from './components/Inicio'
+import Zona from './components/Zona'
+import Asientos from './components/Asientos'
+import Wallet from './components/Wallet'
+import Ayuda from './components/Ayuda'
 import { useState } from 'react'
 import './styles/user.css'
 import './styles/backgrounds.css'
@@ -11,6 +15,7 @@ import './styles/inputs.css'
 import './styles/buttons.css'
 import './styles/error-message.css'
 import './styles/auth-links.css'
+import './styles/inicio.css'
  
 function App() {
   const [user, setUser] = useState(() => {
@@ -43,8 +48,11 @@ function App() {
       : <Login setUser={handleSetUser} setEsRegistro={setEsRegistro} />
   }
  
-  if (page === 'perfil') return <Welcome user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} />
+if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
+if (page === 'wallet') return <Wallet user={user} setUser={handleSetUser} setPage={handleSetPage} />
+if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
+if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} />
+return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} />
 }
  
 export default App

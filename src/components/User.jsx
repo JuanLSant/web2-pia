@@ -68,9 +68,12 @@ function Welcome({ user, setUser, setPage }) {
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">
-                                    {/* <button className="dropdown-item" onClick={() => { setPage('perfil'); setDropdownOpen(false); }}>
-                                        Mi perfil
-                                    </button> */}
+                                    <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
+                                        Wallet
+                                    </button>
+                                    <button className="dropdown-item" onClick={() => { setPage('ayuda'); setDropdownOpen(false); }}>
+                                        Ayuda
+                                    </button>
                                     <button className="dropdown-item danger" onClick={handleCerrarSesion}>
                                         Cerrar sesión
                                     </button>

@@ -39,16 +39,19 @@ function Inicio({ user, setUser, setPage }) {
                             >
                                 {user.nombre.charAt(0).toUpperCase()}
                             </div>
-                            {dropdownOpen && (
-                                <div className="dropdown-menu">
-                                    {/* <button className="dropdown-item" onClick={() => { setPage('perfil'); setDropdownOpen(false); }}>
-                                        Mi perfil
-                                    </button> */}
-                                    <button className="dropdown-item danger" onClick={handleCerrarSesion}>
-                                        Cerrar sesión
-                                    </button>
-                                </div>
-                            )}
+                                {dropdownOpen && (
+                                    <div className="dropdown-menu">
+                                        <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
+                                            Wallet
+                                        </button>
+                                        <button className="dropdown-item" onClick={() => { setPage('ayuda'); setDropdownOpen(false); }}>
+                                            Ayuda
+                                        </button>
+                                        <button className="dropdown-item danger" onClick={handleCerrarSesion}>
+                                            Cerrar sesión
+                                        </button>
+                                    </div>
+                                )}
                         </div>
                     ) : (
                         <button className='button-menu' onClick={() => setPage('login')}>Iniciar sesión</button>
@@ -56,7 +59,65 @@ function Inicio({ user, setUser, setPage }) {
                 </div>
             </footer>
             <div className="container-content-dashboard">
-            
+                <div className="container-dashboard-col">
+                    <div className="container-banner-ini-p"></div>
+                    <div className="section-banner-ini">
+
+                        <div className="tarjeta-banner" onClick={() => setPage('zona')}>
+                            <div className="container-banderas">
+                                <div className="bandera">
+                                    <img src='src/assets/suecia.jpg' />
+                                </div>
+                                <h1>VS</h1>
+                                <div className="bandera">
+                                    <img src='src/assets/Tunez.jpg' />
+                                </div>
+                            </div>
+                            <div className="container-info-partido">
+                                <h1>Suecia VS Túnez</h1>
+                                <div className="container-fecha-partido">
+                                    <p>14 de Junio (8:00 pm) </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div className="tarjeta-banner" onClick={() => setPage('zona')}>
+                            <div className="container-banderas">
+                                <div className="bandera">
+                                    <img src='src/assets/Tunez.jpg' />
+                                </div>
+                                <h1>VS</h1>
+                                <div className="bandera">
+                                    <img src='src/assets/Japon.png' />
+                                </div>
+                            </div>
+                            <div className="container-info-partido">
+                                <h1>Túnez VS Japón</h1>
+                                <div className="container-fecha-partido">
+                                    <p>20 de Junio (8:00 pm) </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="tarjeta-banner" onClick={() => setPage('zona')}>
+                            <div className="container-banderas">
+                                <div className="bandera">
+                                    <img src='src/assets/sudafrica.png' />
+                                </div>
+                                <h1>VS</h1>
+                                <div className="bandera">
+                                    <img src='src/assets/sur corea.jpg' />
+                                </div>
+                            </div>
+                            <div className="container-info-partido">
+                                <h1>Sudáfrica VS Corea del Sur</h1>
+                                <div className="container-fecha-partido">
+                                    <p>24 de Junio (8:00 pm) </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="tarjeta-banner"></div>
+                    </div>
+                </div>
             </div>
         </div>
     );
