@@ -51,6 +51,7 @@ function App() {
 if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
 if (page === 'wallet') return <Wallet user={user} setUser={handleSetUser} setPage={handleSetPage} />
 if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
+if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} />
 return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} />
 }
  
