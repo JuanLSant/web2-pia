@@ -10,9 +10,9 @@ app.use(express.urlencoded({ extended: true }));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '12345', 
+    password: '', 
     database: 'mundial_mexico',
-    port: 3306 
+    port: 3307 
 });
 
 db.connect((err) => {
@@ -31,12 +31,22 @@ app.get('/test-db', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+    console.log("Datos recibidos del cliente:", req.body);
     const { username, password } = req.body;
-    const sql = "SELECT id_usuario, nombre, correo FROM usuarios WHERE nombre = ? AND password = ?";
+
+    //console.log("Intentando login con:", username, password);
+    
+    const sql = "SELECT * FROM usuarios WHERE nombre = ? AND password = ?";
+    
     db.query(sql, [username, password], (err, data) => {
+        console.log("Resultado de la base de datos:", data);
         if (err) return res.status(500).json(err);
-        if (data.length > 0) return res.json({ success: true, usuario: data[0] });
-        return res.status(401).json({ alerta: "Usuario o contraseña no coinciden" });
+        
+        if (data.length > 0) {
+            return res.json(data[0]);
+        } else {
+            return res.status(401).json({ alerta: "Usuario o contraseña no coinciden" });
+        }
     });
 });
 
