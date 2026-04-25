@@ -37,7 +37,7 @@ function Inicio({ user, setUser, setPage }) {
                                 title={user.nombre}
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
-                                {user.nombre.charAt(0).toUpperCase()}
+                                {user && user.nombre ? user.nombre.charAt(0).toUpperCase() : "?"}
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">

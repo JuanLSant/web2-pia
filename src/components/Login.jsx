@@ -7,38 +7,35 @@ function Login({setUser, setEsRegistro}){
     const [error, setError] = useState(false);
     const [errorMessage, setErrorMessage] = useState ("");
 
-const validardatos = async (e) => {
-    e.preventDefault();
-    if (username === "" || password === "") {
-        setError(true);
-        setErrorMessage("Los campos se encuentran vacios");
-        return;
-    }
-    try {
-        const response = await fetch('http://localhost:8081/login', {
+    const validardatos = async (e) => { 
+        e.preventDefault();
+        if ( username==="" || password==="" ) {
+            setError(true);
+            setErrorMessage("Los campos se encuentran vacios");
+            return;
+        }
+        try {
+           // cnexión con el servidor de node.js
+           const response = await fetch('http://localhost:8081/login', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: username, password: password })
         });
 
         const data = await response.json();
-        console.log("Respuesta del servidor:", data); 
 
-        if (data.success) {
-            setError(false);
-            console.log("Datos usuario:", data.usuario);
-            setUser(data.usuario);
+        if (data.nombre) {
+           setError(false);
+           setUser(data); 
         } else {
-            setError(true);
-            setErrorMessage(data.alerta || "Error en credenciales");
+           setError(true);
+           setErrorMessage(data.alerta || "Error en credenciales");
         }
-
-    } catch (err) {
-        console.log("Error catch:", err); 
+      } catch (err) {
         setError(true);
         setErrorMessage("No se pudo conectar con el servidor");
-    }
-};
+      }
+    };
 
     return  (
         <div className="index-background">

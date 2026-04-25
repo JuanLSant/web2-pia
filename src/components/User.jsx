@@ -64,7 +64,7 @@ function Welcome({ user, setUser, setPage }) {
                                 title={user.nombre}
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
-                                {user.nombre.charAt(0).toUpperCase()}
+                                {user?.nombre?.charAt(0).toUpperCase() || "?"}
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">
@@ -96,7 +96,7 @@ function Welcome({ user, setUser, setPage }) {
                                 <input
                                     className="input-index"
                                     type='text'
-                                    placeholder={user.nombre}
+                                    placeholder={user?.nombre || "Cargando..."}
                                     value={datos.nombre}
                                     onChange={e => setDatos({ ...datos, nombre: e.target.value })}
                                 />
@@ -106,7 +106,7 @@ function Welcome({ user, setUser, setPage }) {
                                 <input
                                     className="input-index"
                                     type='email'
-                                    placeholder={user.correo}
+                                    placeholder={user?.correo || "Cargando..."}
                                     value={datos.correo}
                                     disabled
                                 />
