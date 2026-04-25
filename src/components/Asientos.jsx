@@ -121,7 +121,7 @@ function Asientos({ user, setUser, setPage }) {
                         <aside className="panel-pago">
                             <h3>Resumen de Compra</h3>
                             <div className="detalle">
-                                <p>Zona T7 - Estadio Azteca</p>
+                                <p>Zona T7 - Estadio BBVA</p>
                                 <p>Asientos: {seleccionados.length}</p>
                                 {seleccionados.map(id => (
                                     <div key={id} className="ticket-item">
