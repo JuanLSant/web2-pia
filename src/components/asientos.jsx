@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const SeleccionAsientos = () => {
     // Datos de ejemplo: 'L' = Libre, 'O' = Ocupado
@@ -14,17 +14,24 @@ const SeleccionAsientos = () => {
         
     ]);
 
-    const [seleccionados, setSeleccionados] = useState([]);
+    const [seleccionados, setSeleccionados] = useState(() => {
+        const guardados = localStorage.getItem('asientos_seleccionados');
+        return guardados ? JSON.parse(guardados):[];
+    });
     const precio = 5000;
 
-const manejarCambio = (fila, col) => {
+    useEffect(()=>{
+        localStorage.setItem('asientos_seleccionaodos', JSON.stringify(seleccionados));
+    }, [seleccionados]);
+
+ const manejarCambio = (fila, col) => {
     const id = `${fila}-${col}`;
     if (seleccionados.includes(id)) {
         setSeleccionados(seleccionados.filter(item => item !== id));
     } else {
         setSeleccionados([...seleccionados, id]);
     }
-};
+ };
 
     return (
         <div className="index-background">
