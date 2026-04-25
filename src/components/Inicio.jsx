@@ -56,7 +56,16 @@ function Inicio({ user, setUser, setPage }) {
                 </div>
             </footer>
             <div className="container-content-dashboard">
-            
+                <div className="container-dashboard-col">
+                    <div className="container-banner-ini-p"></div>
+                    <div className="section-banner-ini">
+                        <div className="tarjeta-banner"></div>
+                        <div className="tarjeta-banner"></div>
+                        <div className="tarjeta-banner"></div>
+                        <div className="tarjeta-banner"></div>
+                        <div className="tarjeta-banner"></div>
+                    </div>
+                </div>
             </div>
         </div>
     );

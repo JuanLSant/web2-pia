@@ -11,6 +11,7 @@ import './styles/inputs.css'
 import './styles/buttons.css'
 import './styles/error-message.css'
 import './styles/auth-links.css'
+import './styles/inicio.css'
  
 function App() {
   const [user, setUser] = useState(() => {
