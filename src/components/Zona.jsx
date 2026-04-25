@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
- 
-function Inicio({ user, setUser, setPage }) {
+
+function Zona({ user, setUser, setPage }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
- 
+
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -13,12 +13,12 @@ function Inicio({ user, setUser, setPage }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
- 
+
     const handleCerrarSesion = () => {
         setUser(null);
         setDropdownOpen(false);
     };
- 
+
     return (
         <div className="background-page">
             <footer className='bar-menu'>
@@ -39,39 +39,36 @@ function Inicio({ user, setUser, setPage }) {
                             >
                                 {user.nombre.charAt(0).toUpperCase()}
                             </div>
-                                {dropdownOpen && (
-                                    <div className="dropdown-menu">
-                                        <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
-                                            Wallet
-                                        </button>
-                                        <button className="dropdown-item" onClick={() => { setPage('ayuda'); setDropdownOpen(false); }}>
-                                            Ayuda
-                                        </button>
-                                        <button className="dropdown-item danger" onClick={handleCerrarSesion}>
-                                            Cerrar sesión
-                                        </button>
-                                    </div>
-                                )}
+                            {dropdownOpen && (
+                                <div className="dropdown-menu">
+                                    <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
+                                        Wallet
+                                    </button>
+                                    <button className="dropdown-item" onClick={() => { setPage('ayuda'); setDropdownOpen(false); }}>
+                                        Ayuda
+                                    </button>
+                                    <button className="dropdown-item danger" onClick={handleCerrarSesion}>
+                                        Cerrar sesión
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <button className='button-menu' onClick={() => setPage('login')}>Iniciar sesión</button>
                     )}
                 </div>
             </footer>
+
+            
             <div className="container-content-dashboard">
                 <div className="container-dashboard-col">
                     <div className="container-banner-ini-p"></div>
-                    <div className="section-banner-ini">
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                    </div>
+                    
                 </div>
             </div>
+
         </div>
     );
 }
- 
-export default Inicio;
+
+export default Zona;
