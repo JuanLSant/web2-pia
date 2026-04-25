@@ -87,7 +87,7 @@ function Asientos({ user, setUser, setPage }) {
 
                     {/* ── Contenido de SeleccionAsientos ── */}
                     <header className="header-estadio">
-                        <h1>Túnez vs Japón</h1>
+                        {/* <h1>Túnez vs Japón</h1> */}
                         <p>Mundial 2026 - Fase de Grupos</p>
                     </header>
 
