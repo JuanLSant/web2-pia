@@ -2,8 +2,21 @@ import { useState, useEffect, useRef } from 'react';
  
 function Inicio({ user, setUser, setPage, setSelectedMatch }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
+    const [partidos, setPartidos] = useState([]); 
     const dropdownRef = useRef(null);
  
+    useEffect(() => {
+        fetch('http://localhost:8081/api/partidos')
+            .then(response => {
+                if (!response.ok) throw new Error('Error al traer partidos');
+                return response.json();
+            })
+            .then(data => {
+                setPartidos(data); 
+            })
+            .catch(error => console.error('Error cargando partidos dinámicos:', error));
+    }, []);
+
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -63,58 +76,53 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                     <div className="container-banner-ini-p"></div>
                     <div className="section-banner-ini">
 
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/suecia.jpg', flagRight: 'src/assets/Tunez.jpg', fecha: '14 de Junio (8:00 pm)' }); setPage('zona'); }}>
-                            <div className="container-banderas">
-                                <div className="bandera">
-                                    <img src='src/assets/suecia.jpg' />
+                        {partidos.map((partido) => {
+                            const localLower = partido.equipo_local.toLowerCase();
+                            const visitanteLower = partido.equipo_visitante.toLowerCase();;
+
+                            let imgLocal = localLower + '.jpg'; 
+                            if (localLower === 'túnez' || localLower === 'tunez') imgLocal = 'Tunez.jpg';
+                            if (localLower === 'sudáfrica' || localLower === 'sudafrica') imgLocal = 'sudáfrica.png';
+
+                            let imgVisitante = visitanteLower + '.jpg';
+                            if (visitanteLower === 'túnez' || visitanteLower === 'tunez') imgVisitante = 'Tunez.jpg';
+                            if (visitanteLower === 'corea del sur') imgVisitante = 'sur corea.jpg';
+                            if (visitanteLower === 'japón' || visitanteLower === 'japon') imgVisitante = 'japón.png';
+
+                            return (
+                                <div 
+                                    key={partido.id_partido} 
+                                    className="tarjeta-banner" 
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() => { 
+                                        setSelectedMatch({
+                                            id_partido: partido.id_partido,
+                                            fecha: partido.fecha,
+                                            flagLeft: `src/assets/${imgLocal}`,
+                                            flagRight: `src/assets/${imgVisitante}`
+                                        }); 
+                                        setPage('zona'); 
+                                    }}
+                                >
+                                    <div className="container-banderas">
+                                        <div className="bandera">
+                                            <img src={`src/assets/${imgLocal}`} alt={partido.equipo_local} />
+                                        </div>
+                                        <h1>VS</h1>
+                                        <div className="bandera">
+                                            <img src={`src/assets/${imgVisitante}`} alt={partido.equipo_visitante} />
+                                        </div>
+                                    </div>
+                                    <div className="container-info-partido">
+                                        <h1>{partido.equipo_local} VS {partido.equipo_visitante}</h1>
+                                        <div className="container-fecha-partido">
+                                            <p>{new Date(partido.fecha).toLocaleString('es-MX', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h1>VS</h1>
-                                <div className="bandera">
-                                    <img src='src/assets/Tunez.jpg' />
-                                </div>
-                            </div>
-                            <div className="container-info-partido">
-                                <h1>Suecia VS Túnez</h1>
-                                <div className="container-fecha-partido">
-                                    <p>14 de Junio (8:00 pm) </p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/Tunez.jpg', flagRight: 'src/assets/Japon.png', fecha: '20 de Junio (8:00 pm)' }); setPage('zona'); }}>
-                            <div className="container-banderas">
-                                <div className="bandera">
-                                    <img src='src/assets/Tunez.jpg' />
-                                </div>
-                                <h1>VS</h1>
-                                <div className="bandera">
-                                    <img src='src/assets/Japon.png' />
-                                </div>
-                            </div>
-                            <div className="container-info-partido">
-                                <h1>Túnez VS Japón</h1>
-                                <div className="container-fecha-partido">
-                                    <p>20 de Junio (8:00 pm) </p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/sudafrica.png', flagRight: 'src/assets/sur corea.jpg', fecha: '24 de Junio (8:00 pm)' }); setPage('zona'); }}>
-                            <div className="container-banderas">
-                                <div className="bandera">
-                                    <img src='src/assets/sudafrica.png' />
-                                </div>
-                                <h1>VS</h1>
-                                <div className="bandera">
-                                    <img src='src/assets/sur corea.jpg' />
-                                </div>
-                            </div>
-                            <div className="container-info-partido">
-                                <h1>Sudáfrica VS Corea del Sur</h1>
-                                <div className="container-fecha-partido">
-                                    <p>24 de Junio (8:00 pm) </p>
-                                </div>
-                            </div>
-                        </div>
+                            );
+                        })}
+
                         <div className="tarjeta-banner"></div>
                     </div>
                 </div>

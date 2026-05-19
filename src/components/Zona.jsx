@@ -1,10 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import bgWorldCup from '../assets/SC-World-Cup-Off-Plat-copy.webp';
 import flagSurCorea from '../assets/sur corea.jpg';
-import flagJapon from '../assets/japon.png';
+import flagJapon from '../assets/japón.png';
 import flagTunez from '../assets/Tunez.jpg';
 import flagSuecia from '../assets/Suecia.jpg';
-import flagSudafrica from '../assets/sudafrica.png';
+import flagSudafrica from '../assets/sudáfrica.png';
 
 const todasLasFechas = [
     '14 de Junio (8:00 pm)',
@@ -13,12 +13,11 @@ const todasLasFechas = [
     '28 de Junio (8:00 pm)',
 ];
 
-// Mapeo de costos por zona
-const costosZona = {
-    'zona-1': 5000,
-    'zona-2': 3500,
-    'zona-3': 2000,
-    'palcos': 10000
+const idsBaseDatosZona = {
+    'zona-1': 1,
+    'zona-2': 2,
+    'zona-3': 3,
+    'palcos': 4
 };
 
 function MatchCard({ backgroundSrc, flagLeft, flagRight }) {
@@ -36,7 +35,7 @@ function MatchCard({ backgroundSrc, flagLeft, flagRight }) {
     );
 }
 
-function Zona({ user, setUser, setPage, selectedMatch }) {
+function Zona({ user, setUser, setPage, selectedMatch, setZonaElegida }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
 
@@ -46,14 +45,13 @@ function Zona({ user, setUser, setPage, selectedMatch }) {
     const [seleccion, setSeleccion] = useState({ 
         id: 'A-1', 
         zona: 'zona-1', 
-        dPath: 'M397.042 153.284L383.01 154.671L383.945 167.33L397.977 165.943L397.042 153.284Z' // Path inicial por defecto
+        dPath: 'M397.042 153.284L383.01 154.671L383.945 167.33L397.977 165.943L397.042 153.284Z' 
     });
 
     const handleEstadioClick = (e) => {
         const elemento = e.target;
         const idAsiento = elemento.id;
         
-        // Buscamos a qué grupo pertenece
         const grupoZona = elemento.closest('#zona-1, #zona-2, #zona-3, #palcos');
         const esInactivo = elemento.closest('#zona-0, #Cancha, #fondo');
 
@@ -62,7 +60,7 @@ function Zona({ user, setUser, setPage, selectedMatch }) {
         setSeleccion({
             id: idAsiento,
             zona: grupoZona.id,
-            dPath: elemento.getAttribute('d') // Guardamos el path para mostrarlo en la referencia
+            dPath: elemento.getAttribute('d') 
         });
     };
     // ==========================================
@@ -371,11 +369,19 @@ function Zona({ user, setUser, setPage, selectedMatch }) {
                                     </h1>
                                     <h2 className="nombre-de-area">Asiento: {seleccion.id}</h2>
                                     <p className="espacios-disp">Estado: Disponible</p>
-                                    <p className="costo-z">Costo: ${costosZona[seleccion.zona]} MXN</p>
+                                    <p className="costo-z">Costo: ${seleccion.zona === 'palcos' ? 10000 : seleccion.zona === 'zona-1' ? 5000 : seleccion.zona === 'zona-2' ? 3500 : 2000} MXN</p>
                                     <div className="lado-derecho-footer">
-                                        <button className="button-index" onClick={() => setPage('asientos')}>
-                                            Reservar {seleccion.id}
-                                        </button>
+                                        <button className="button-index" onClick={() => {
+                                            setZonaElegida({
+                                                id: idsBaseDatosZona[seleccion.zona],
+                                                nombre: seleccion.zona.replace('-', ' '),
+                                                
+                                            });
+
+                                        setPage('asientos');
+                                        }}>
+                                    Reservar {seleccion.id}
+                                    </button>
                                     </div>
                                 </div>
                             </div>

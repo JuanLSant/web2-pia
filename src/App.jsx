@@ -27,7 +27,8 @@ function App() {
   const [page, setPage] = useState(() => {
     return localStorage.getItem('page') || 'inicio'
   })
-  const [selectedMatch, setSelectedMatch] = useState(null) // 👈 nuevo estado
+  const [selectedMatch, setSelectedMatch] = useState(null) 
+  const [zonaElegida, setZonaElegida] = useState(null)
 
   const handleSetUser = (nuevoUsuario) => {
     if (nuevoUsuario) {
@@ -51,9 +52,9 @@ function App() {
   }
 
   if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} zonaElegida={zonaElegida} />
   if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} /> // 👈
+  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} setZonaElegida={setZonaElegida} /> 
   return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={setSelectedMatch} /> // 👈
 }
 
