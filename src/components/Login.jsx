@@ -1,64 +1,64 @@
 import { useState } from 'react';
 
 
-function Login({setUser, setEsRegistro}){
+function Login({ setUser, setEsRegistro }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState ("");
+    const [errorMessage, setErrorMessage] = useState("");
 
-const validardatos = async (e) => {
-    e.preventDefault();
-    if (username === "" || password === "") {
-        setError(true);
-        setErrorMessage("Los campos se encuentran vacios");
-        return;
-    }
-    try {
-        const response = await fetch('http://localhost:8081/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ username: username, password: password })
-        });
-
-        const data = await response.json();
-        console.log("Respuesta del servidor:", data); 
-
-        if (data.success) {
-            setError(false);
-            console.log("Datos usuario:", data.usuario);
-            setUser(data.usuario);
-        } else {
+    const validardatos = async (e) => {
+        e.preventDefault();
+        if (username === "" || password === "") {
             setError(true);
-            setErrorMessage(data.alerta || "Error en credenciales");
+            setErrorMessage("Los campos se encuentran vacios");
+            return;
         }
+        try {
+            const response = await fetch('http://localhost:8081/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: username, password: password })
+            });
 
-    } catch (err) {
-        console.log("Error catch:", err); 
-        setError(true);
-        setErrorMessage("No se pudo conectar con el servidor");
-    }
-};
+            const data = await response.json();
+            console.log("Respuesta del servidor:", data);
 
-    return  (
+            if (data.success) {
+                setError(false);
+                console.log("Datos usuario:", data.usuario);
+                setUser(data.usuario);
+            } else {
+                setError(true);
+                setErrorMessage(data.alerta || "Error en credenciales");
+            }
+
+        } catch (err) {
+            console.log("Error catch:", err);
+            setError(true);
+            setErrorMessage("No se pudo conectar con el servidor");
+        }
+    };
+    // fjfjhfjfjhg
+    return (
         <div className="index-background">
             <h1 className="title-1">Login</h1>
             <form className="form-index" onSubmit={validardatos}>
-                <input 
+                <input
                     className="input-index"
-                    type='text' 
-                    placeholder='Username' 
-                    value={username} 
-                    onChange={(e) => setUsername(e.target.value)} 
+                    type='text'
+                    placeholder='Username'
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
                     name='username'
                 />
 
-                <input 
+                <input
                     className="input-index"
-                    type='password' 
-                    placeholder='Password' 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
+                    type='password'
+                    placeholder='Password'
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     name='password'
                 />
 
@@ -69,12 +69,12 @@ const validardatos = async (e) => {
                 {error && <p className="error-message">{errorMessage}</p>}
 
                 <span className='auth-link' onClick={() => setEsRegistro(true)}>
-                Registrarse
+                    Registrarse
                 </span>
             </form>
         </div>
     )
-    
+
 }
 
 export default Login;
