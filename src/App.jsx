@@ -2,6 +2,7 @@ import Login from './components/Login'
 import Welcome from './components/User'
 import Registro from './components/Registro'
 import Inicio from './components/Inicio'
+import asientos from './components/asientos'
 import { useState } from 'react'
 import './styles/user.css'
 import './styles/backgrounds.css'
@@ -11,6 +12,7 @@ import './styles/inputs.css'
 import './styles/buttons.css'
 import './styles/error-message.css'
 import './styles/auth-links.css'
+import './styles/asientos.css'
  
 function App() {
   const [user, setUser] = useState(() => {
