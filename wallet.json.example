@@ -1,6 +1,6 @@
 {
-  "type": "service_account",
-  "project_id": "TU_ID_DE_PROYECTO",
-  "private_key": "-----BEGIN PRIVATE KEY-----\nREEMPLAZA_CON_TU_LLAVE_O_BORRA_ESTO\n-----END PRIVATE KEY-----",
-  "client_email": "tu-servicio@proyecto.iam.gserviceaccount.com"
+  "type": "",
+  "project_id": "",
+  "private_key": "-----BEGIN PRIVATE KEY-----\n\n-----END PRIVATE KEY-----",
+  "client_email": "iam.gserviceaccount.com"
 }
