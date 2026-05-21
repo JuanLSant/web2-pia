@@ -1,5 +1,7 @@
 import { useState } from 'react';
-
+import userRoundIcon from '../assets/user-round.svg';
+import atSignIcon from '../assets/at-sign.svg';
+import lockIcon from '../assets/lock.svg';
 
 function Registro({ setEsRegistro }) {
     const [nombre, setNombre] = useState("");
@@ -24,7 +26,6 @@ function Registro({ setEsRegistro }) {
         }
 
         try {
-            
             const response = await fetch('http://localhost:8081/registro', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -47,49 +48,61 @@ function Registro({ setEsRegistro }) {
     };
 
     return (
-        <div className="index-background">
-            <h1 className="title-1">Crear Cuenta</h1>
-            
-            <form className="form-index" onSubmit={manejarRegistro}>
-                <input 
-                    className="input-index"
-                    type='text' 
-                    placeholder='Nombre completo' 
-                    value={nombre} 
-                    onChange={(e) => setNombre(e.target.value)} 
-                />
+        <div className="login-wrap">
+            <div className="login-card">
+                <h1 className="login-title">Bienvenido</h1>
+                <p className="login-subtitle">Crear una cuenta</p>
+                
+                <form onSubmit={manejarRegistro}>
+                    <div className="field-wrap">
+                        <img className="field-icon" src={userRoundIcon} alt="User" />
+                        <input 
+                            className="login-input"
+                            type='text' 
+                            placeholder='Nombre completo' 
+                            value={nombre} 
+                            onChange={(e) => setNombre(e.target.value)} 
+                        />
+                    </div>
 
-                <input 
-                    className="input-index"
-                    type='email' 
-                    placeholder='Correo electrónico' 
-                    value={email} 
-                    onChange={(e) => setEmail(e.target.value)} 
-                />
+                    <div className="field-wrap">
+                        <img className="field-icon" src={atSignIcon} alt="Email" />
+                        <input 
+                            className="login-input"
+                            type='email' 
+                            placeholder='Correo electrónico' 
+                            value={email} 
+                            onChange={(e) => setEmail(e.target.value)} 
+                        />
+                    </div>
 
-                <input 
-                    className="input-index"
-                    type='password' 
-                    placeholder='Contraseña' 
-                    value={password} 
-                    onChange={(e) => setPassword(e.target.value)} 
-                />
+                    <div className="field-wrap">
+                        <img className="field-icon" src={lockIcon} alt="Lock" />
+                        <input 
+                            className="login-input"
+                            type='password' 
+                            placeholder='Contraseña' 
+                            value={password} 
+                            onChange={(e) => setPassword(e.target.value)} 
+                        />
+                    </div>
 
-                <button className="button-index" type='submit'>
-                    Registrarse
-                </button>
+                    <button className="login-btn" type='submit'>
+                        Registrarse
+                    </button>
 
-                {error && <p className="error-message">{errorMessage}</p>}
+                    {error && <p className="error-message">{errorMessage}</p>}
+                </form>
 
-                <p className='auth-link-Text'>
+                <p className='register-row'>
                     ¿Ya tienes cuenta? 
-                    <span className='auth-link' 
+                    <span className='register-link' 
                         onClick={() => setEsRegistro(false)}
                     >
                         Inicia sesión
                     </span>
                 </p>
-            </form>
+            </div>
         </div>
     );
 }

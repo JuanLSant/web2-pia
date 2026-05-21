@@ -17,6 +17,7 @@ import './styles/error-message.css'
 import './styles/auth-links.css'
 import './styles/inicio.css'
 import './styles/asientos.css'
+import './styles/Login.css'
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -27,7 +28,7 @@ function App() {
   const [page, setPage] = useState(() => {
     return localStorage.getItem('page') || 'inicio'
   })
-  const [selectedMatch, setSelectedMatch] = useState(null) // 👈 nuevo estado
+  const [selectedMatch, setSelectedMatch] = useState(null)
 
   const handleSetUser = (nuevoUsuario) => {
     if (nuevoUsuario) {
@@ -53,8 +54,8 @@ function App() {
   if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
   if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} />
   if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} /> // 👈
-  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={setSelectedMatch} /> // 👈
+  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
+  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={setSelectedMatch} />
 }
 
 export default App

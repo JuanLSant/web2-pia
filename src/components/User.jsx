@@ -1,18 +1,19 @@
 import { useState, useEffect, useRef } from 'react';
- 
+import ticketImg from '../assets/ticket-base.svg';
+
 function Welcome({ user, setUser, setPage }) {
     const [datos, setDatos] = useState({ nombre: '', correo: '', password: '' });
     const [mensajeOk, setMensajeOk] = useState('');
     const [mensajeError, setMensajeError] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
- 
+
     useEffect(() => {
         if (user) {
             setDatos({ nombre: user.nombre, correo: user.correo, password: '' });
         }
     }, [user]);
- 
+
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -22,30 +23,30 @@ function Welcome({ user, setUser, setPage }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
- 
+
     const handleGuardar = () => {
         fetch(`http://localhost:8081/usuario/${user.id_usuario}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre: datos.nombre, password: datos.password })
         })
-        .then(res => res.json())
-        .then(() => {
-            setMensajeOk("Datos actualizados correctamente");
-            setMensajeError('');
-            setUser(prev => ({ ...prev, nombre: datos.nombre }));
-        })
-        .catch(() => {
-            setMensajeError("Error al guardar cambios");
-            setMensajeOk('');
-        });
+            .then(res => res.json())
+            .then(() => {
+                setMensajeOk("Datos actualizados correctamente");
+                setMensajeError('');
+                setUser(prev => ({ ...prev, nombre: datos.nombre }));
+            })
+            .catch(() => {
+                setMensajeError("Error al guardar cambios");
+                setMensajeOk('');
+            });
     };
- 
+
     const handleCerrarSesion = () => {
         setUser(null);
         setDropdownOpen(false);
     };
- 
+
     return (
         <div className="background-page">
             <footer className='bar-menu'>
@@ -137,16 +138,16 @@ function Welcome({ user, setUser, setPage }) {
                         <h1>Mis Boletos</h1>
                     </div>
                     <div className="section-botton">
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
+                        {[...Array(5)].map((_, i) => (
+                            <div key={i} className="ticket-svg">
+                                <img src={ticketImg} alt="Boleto" />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
         </div>
     );
 }
- 
+
 export default Welcome;

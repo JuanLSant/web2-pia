@@ -1,5 +1,6 @@
 import { useState } from 'react';
-
+import userRoundIcon from '../assets/user-round.svg';
+import lockIcon from '../assets/lock.svg';
 
 function Login({ setUser, setEsRegistro }) {
     const [username, setUsername] = useState("");
@@ -39,42 +40,57 @@ function Login({ setUser, setEsRegistro }) {
             setErrorMessage("No se pudo conectar con el servidor");
         }
     };
-    // fjfjhfjfjhg
+
     return (
-        <div className="index-background">
-            <h1 className="title-1">Login</h1>
-            <form className="form-index" onSubmit={validardatos}>
-                <input
-                    className="input-index"
-                    type='text'
-                    placeholder='Username'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    name='username'
-                />
+        <div className="login-wrap">
 
-                <input
-                    className="input-index"
-                    type='password'
-                    placeholder='Password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    name='password'
-                />
 
-                <button className="button-index" type='submit'>
-                    Ingresar
-                </button>
+            <div className="login-card">
+                <div className="login-logo"></div>
+                <h1 className="login-title">Bienvenido de vuelta</h1>
+                <p className="login-subtitle">Ingresa tus credenciales para continuar</p>
 
-                {error && <p className="error-message">{errorMessage}</p>}
+                <form onSubmit={validardatos}>
+                    <div className="field-wrap">
+                        <img className="field-icon" src={userRoundIcon} alt="User" />
+                        <input
+                            className="login-input"
+                            type="text"
+                            placeholder="Username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            name="username"
+                            autoComplete="username"
+                        />
+                    </div>
 
-                <span className='auth-link' onClick={() => setEsRegistro(true)}>
-                    Registrarse
-                </span>
-            </form>
+                    <div className="field-wrap">
+                        <img className="field-icon" src={lockIcon} alt="Lock" />
+                        <input
+                            className="login-input"
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            name="password"
+                            autoComplete="current-password"
+                        />
+                    </div>
+
+                    <button className="login-btn" type="submit">Ingresar</button>
+
+                    {error && <p className="error-message">{errorMessage}</p>}
+                </form>
+
+                <p className="register-row">
+                    ¿No tienes cuenta?
+                    <span className="register-link" onClick={() => setEsRegistro(true)}>
+                        Registrarse
+                    </span>
+                </p>
+            </div>
         </div>
-    )
-
+    );
 }
 
 export default Login;
