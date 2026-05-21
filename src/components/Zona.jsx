@@ -98,7 +98,11 @@ function Zona({ user, setUser, setPage, selectedMatch }) {
                     {user ? (
                         <div className="avatar-wrapper" ref={dropdownRef}>
                             <div className="avatar-menu" title={user.nombre} onClick={() => setDropdownOpen(prev => !prev)}>
-                                {user.nombre.charAt(0).toUpperCase()}
+                                {user.imagen_url ? (
+                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                ) : (
+                                    user.nombre.charAt(0).toUpperCase()
+                                )}
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">

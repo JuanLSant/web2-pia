@@ -187,6 +187,30 @@
     font-size: 22px;
 }
 
+.login-logo-icon {
+    width: 22px;
+    height: 22px;
+    display: block;
+    opacity: 0.85;
+}
+
+.login-logo-avatar {
+    width: 54px;
+    height: 54px;
+    border-radius: 15%;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-logo-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
 .login-title {
     font-size: 1.5rem;
     font-weight: 600;
@@ -300,4 +324,91 @@
 
 .register-link:hover {
     color: #38f9d7;
+}
+
+/* Modal de Perfil */
+.profile-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-modal-card {
+    background: rgba(20, 10, 30, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 20px;
+    padding: 30px 40px;
+    text-align: center;
+    width: 90%;
+    max-width: 350px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+}
+
+.profile-modal-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 25px;
+    letter-spacing: -0.3px;
+}
+
+.profile-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-modal-btn {
+    padding: 12px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.15s;
+}
+
+.profile-modal-btn.primary {
+    background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+    color: #0a1f14;
+}
+
+.profile-modal-btn.secondary {
+    background: rgba(255, 255, 255, 0.1);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.profile-modal-btn:hover {
+    opacity: 0.88;
+}
+
+.profile-modal-btn:active {
+    transform: scale(0.98);
+}
+
+.profile-modal-preview {
+    margin: 15px auto 25px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 3px solid #38f9d7;
+    box-shadow: 0 4px 15px rgba(56, 249, 215, 0.3);
+}
+
+.profile-modal-preview img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }

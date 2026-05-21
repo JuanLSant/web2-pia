@@ -37,7 +37,11 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                                 title={user.nombre}
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
-                                {user.nombre.charAt(0).toUpperCase()}
+                                {user.imagen_url ? (
+                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                ) : (
+                                    user.nombre.charAt(0).toUpperCase()
+                                )}
                             </div>
                                 {dropdownOpen && (
                                     <div className="dropdown-menu">
