@@ -112,6 +112,13 @@
     opacity: 0.6;
 }
 
+.asiento-reservado {
+    background-color: #e74c3c !important; 
+    cursor: not-allowed;
+    opacity: 0.7;
+    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
+}
+
 
 .columna-derecha {
     flex: 1;

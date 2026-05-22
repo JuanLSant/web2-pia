@@ -28,11 +28,59 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
         ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
     ]);
     const [seleccionados, setSeleccionados] = useState([]);
+    const [asientosDb, setAsientosDb] = useState([]);
+    const [loading, setLoading] = useState(true);
     const precio = costosZona[selectedSeat.zona] || 5000;
 
     // ── Estados y Efectos del Temporizador de 5 Minutos ───────────
     const [tiempoRestante, setTiempoRestante] = useState(300); // 5 minutos en segundos
     const [temporizadorActivo, setTemporizadorActivo] = useState(false);
+
+    const fetchAsientos = async () => {
+        if (!selectedMatch?.id_partido) return;
+        try {
+            const url = `http://localhost:8081/partido-asientos?id_partido=${selectedMatch.id_partido}&zona=${selectedSeat.zona}&area=${selectedSeat.id}`;
+            const response = await fetch(url);
+            const data = await response.json();
+            if (data.success) {
+                setAsientosDb(data.asientos);
+            }
+        } catch (err) {
+            console.error("Error al obtener los asientos de la BD:", err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchAsientos();
+    }, [selectedMatch, selectedSeat]);
+
+    const handleCancelarReserva = async (asientosALiberar = seleccionados) => {
+        if (asientosALiberar.length === 0) return;
+        try {
+            const response = await fetch('http://localhost:8081/liberar-asientos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_partido: selectedMatch.id_partido,
+                    zona: selectedSeat.zona,
+                    area: selectedSeat.id,
+                    nomenclaturas: asientosALiberar
+                })
+            });
+            if (response.ok) {
+                setSeleccionados([]);
+                setTemporizadorActivo(false);
+                setTiempoRestante(300);
+                await fetchAsientos();
+            } else {
+                console.error("No se pudieron liberar los asientos en la base de datos.");
+            }
+        } catch (err) {
+            console.error("Error al liberar asientos:", err);
+        }
+    };
 
     useEffect(() => {
         let intervalo = null;
@@ -40,14 +88,13 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
             intervalo = setInterval(() => {
                 setTiempoRestante(prev => prev - 1);
             }, 1000);
-        } else if (tiempoRestante === 0) {
+        } else if (tiempoRestante === 0 && temporizadorActivo) {
+            const guardados = [...seleccionados];
             alert("¡El tiempo de reserva ha expirado! Tu selección de asientos ha sido liberada.");
-            setSeleccionados([]);
-            setTemporizadorActivo(false);
-            setTiempoRestante(300);
+            handleCancelarReserva(guardados);
         }
         return () => clearInterval(intervalo);
-    }, [temporizadorActivo, tiempoRestante]);
+    }, [temporizadorActivo, tiempoRestante, seleccionados]);
 
     useEffect(() => {
         if (seleccionados.length === 0 && temporizadorActivo) {
@@ -62,24 +109,76 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
         return `${minutos.toString().padStart(2, '0')}:${restoSegundos.toString().padStart(2, '0')}`;
     };
 
-    const handleConfirmarAsientos = () => {
-        setTemporizadorActivo(true);
-        setTiempoRestante(300);
+    const handleConfirmarAsientos = async () => {
+        if (seleccionados.length === 0) return;
+        try {
+            const response = await fetch('http://localhost:8081/reservar-asientos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_partido: selectedMatch.id_partido,
+                    zona: selectedSeat.zona,
+                    area: selectedSeat.id,
+                    nomenclaturas: seleccionados
+                })
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+                setTemporizadorActivo(true);
+                setTiempoRestante(300);
+                await fetchAsientos();
+            } else {
+                alert(data.error || "No se pudieron reservar los asientos. Intenta de nuevo.");
+                setSeleccionados([]);
+                await fetchAsientos();
+            }
+        } catch (err) {
+            console.error("Error al reservar asientos:", err);
+            alert("Error al conectar con el servidor. Intenta de nuevo.");
+        }
     };
 
-    const handleCancelarReserva = () => {
-        setSeleccionados([]);
-        setTemporizadorActivo(false);
-        setTiempoRestante(300);
+    const handleFinalizarCompra = async () => {
+        if (seleccionados.length === 0) return;
+        try {
+            const totalCompra = seleccionados.length * precio;
+            const response = await fetch('http://localhost:8081/comprar-asientos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id_partido: selectedMatch.id_partido,
+                    zona: selectedSeat.zona,
+                    area: selectedSeat.id,
+                    nomenclaturas: seleccionados,
+                    id_usuario: user.id_usuario,
+                    total: totalCompra
+                })
+            });
+            const data = await response.json();
+            if (response.ok && data.success) {
+                alert(`¡Asientos confirmados con éxito! Total a pagar: $${totalCompra}`);
+                setSeleccionados([]);
+                setTemporizadorActivo(false);
+                setTiempoRestante(300);
+                setPage('inicio');
+            } else {
+                alert(data.error || "No se pudo finalizar la compra. Intenta de nuevo.");
+            }
+        } catch (err) {
+            console.error("Error al comprar asientos:", err);
+            alert("Error al conectar con el servidor. Intenta de nuevo.");
+        }
     };
 
-    const handleFinalizarCompra = () => {
-        alert(`¡Asientos confirmados con éxito! Total a pagar: $${seleccionados.length * precio}`);
-        setSeleccionados([]);
-        setTemporizadorActivo(false);
-        setTiempoRestante(300);
-        setPage('inicio');
+    const navegarAPagina = async (nuevaPagina) => {
+        if (temporizadorActivo) {
+            const confirmar = window.confirm("Tienes una reserva activa. Si sales de esta página se liberarán tus asientos. ¿Deseas continuar?");
+            if (!confirmar) return;
+            await handleCancelarReserva();
+        }
+        setPage(nuevaPagina);
     };
+
     // ─────────────────────────────────────────────────────────────
 
     useEffect(() => {
@@ -92,7 +191,10 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    const handleCerrarSesion = () => {
+    const handleCerrarSesion = async () => {
+        if (temporizadorActivo) {
+            await handleCancelarReserva();
+        }
         setUser(null);
         setDropdownOpen(false);
     };
@@ -109,10 +211,10 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
             <footer className='bar-menu'>
                 <div className="bar-space"></div>
                 <div className="bar-boton-section">
-                    <button className='button-menu-2' onClick={() => setPage('inicio')}>Inicio</button>
+                    <button className='button-menu-2' onClick={() => navegarAPagina('inicio')}>Inicio</button>
                 </div>
                 <div className="bar-boton-section">
-                    <button className='button-menu-2' onClick={() => setPage('perfil')}>Mi perfil</button>
+                    <button className='button-menu-2' onClick={() => navegarAPagina('perfil')}>Mi perfil</button>
                 </div>
                 <div className="bar-boton-section">
                     {user ? (
@@ -130,10 +232,10 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">
-                                    <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
+                                    <button className="dropdown-item" onClick={() => { navegarAPagina('wallet'); setDropdownOpen(false); }}>
                                         Wallet
                                     </button>
-                                    <button className="dropdown-item" onClick={() => { setPage('ayuda'); setDropdownOpen(false); }}>
+                                    <button className="dropdown-item" onClick={() => { navegarAPagina('ayuda'); setDropdownOpen(false); }}>
                                         Ayuda
                                     </button>
                                     <button className="dropdown-item danger" onClick={handleCerrarSesion}>
@@ -143,7 +245,7 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
                             )}
                         </div>
                     ) : (
-                        <button className='button-menu' onClick={() => setPage('login')}>Iniciar sesión</button>
+                        <button className='button-menu' onClick={() => navegarAPagina('login')}>Iniciar sesión</button>
                     )}
                 </div>
             </footer>
@@ -166,17 +268,20 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
                                     <div key={i} className="fila-asientos">
                                         {fila.map((estado, j) => {
                                             const id = `${i}-${j}`;
-                                            const estaOcupado = estado === 'O';
+                                            const seatDb = asientosDb.find(a => a.nomenclatura === id);
+                                            const isComprado = seatDb?.estado === 'comprado';
+                                            const isReservadoPorOtro = seatDb?.estado === 'inactivo' && !seleccionados.includes(id);
+                                            const isChecked = seleccionados.includes(id);
                                             return (
                                                 <label key={id} className="asiento-label">
                                                     <input
                                                         type="checkbox"
-                                                        disabled={estaOcupado || temporizadorActivo}
-                                                        checked={seleccionados.includes(id)}
+                                                        disabled={loading || isComprado || isReservadoPorOtro || temporizadorActivo}
+                                                        checked={isChecked}
                                                         onChange={() => manejarCambio(i, j)}
                                                         className="input-asiento-oculto"
                                                     />
-                                                    <span className={`asiento-visual ${estaOcupado ? 'asiento-ocupado' : ''} ${temporizadorActivo ? 'asientos-bloqueados' : ''}`} />
+                                                    <span className={`asiento-visual ${isComprado ? 'asiento-ocupado' : ''} ${isReservadoPorOtro ? 'asiento-reservado' : ''} ${temporizadorActivo ? 'asientos-bloqueados' : ''}`} />
                                                 </label>
                                             );
                                         })}
