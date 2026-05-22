@@ -21,12 +21,20 @@ import './styles/Login.css'
 
 function App() {
   const [user, setUser] = useState(() => {
-    const guardado = localStorage.getItem('usuario')
-    return guardado ? JSON.parse(guardado) : null
+    try {
+      const guardado = localStorage.getItem('usuario')
+      if (!guardado || guardado === 'undefined') return null
+      return JSON.parse(guardado)
+    } catch (e) {
+      console.error("Error al parsear el usuario de localStorage:", e)
+      localStorage.removeItem('usuario')
+      return null
+    }
   })
   const [esRegistro, setEsRegistro] = useState(false)
   const [page, setPage] = useState(() => {
-    return localStorage.getItem('page') || 'inicio'
+    const guardadoPage = localStorage.getItem('page')
+    return (guardadoPage && guardadoPage !== 'undefined') ? guardadoPage : 'inicio'
   })
   const [selectedMatch, setSelectedMatch] = useState(null)
 
