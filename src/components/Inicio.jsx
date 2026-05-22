@@ -67,7 +67,7 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                     <div className="container-banner-ini-p"></div>
                     <div className="section-banner-ini">
 
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/suecia.jpg', flagRight: 'src/assets/Tunez.jpg', fecha: '14 de Junio (8:00 pm)' }); setPage('zona'); }}>
+                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/suecia.jpg', flagRight: 'src/assets/Tunez.jpg', fecha: '14 de Junio (8:00 pm)', titulo: 'Suecia VS Túnez' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/suecia.jpg' />
@@ -85,7 +85,7 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                             </div>
                         </div>
                         
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/Tunez.jpg', flagRight: 'src/assets/Japon.png', fecha: '20 de Junio (8:00 pm)' }); setPage('zona'); }}>
+                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/Tunez.jpg', flagRight: 'src/assets/Japon.png', fecha: '20 de Junio (8:00 pm)', titulo: 'Túnez VS Japón' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/Tunez.jpg' />
@@ -102,7 +102,7 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/sudafrica.png', flagRight: 'src/assets/sur corea.jpg', fecha: '24 de Junio (8:00 pm)' }); setPage('zona'); }}>
+                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ flagLeft: 'src/assets/sudafrica.png', flagRight: 'src/assets/sur corea.jpg', fecha: '24 de Junio (8:00 pm)', titulo: 'Sudáfrica VS Corea del Sur' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/sudafrica.png' />

@@ -23,6 +23,14 @@
     transform: translateY(0);
 }
 
+.button-index:disabled {
+    background: #555555;
+    color: #888888;
+    cursor: not-allowed;
+    transform: none !important;
+    box-shadow: none !important;
+}
+
 
 .button-menu {
     width: 80%;

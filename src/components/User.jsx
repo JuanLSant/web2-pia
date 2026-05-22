@@ -27,11 +27,18 @@ function Welcome({ user, setUser, setPage }) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    const hasChanges = datos.nombre !== (user?.nombre || '') || datos.password !== '';
+
     const handleGuardar = () => {
+        const payload = { nombre: datos.nombre };
+        if (datos.password.trim() !== '') {
+            payload.password = datos.password;
+        }
+
         fetch(`http://localhost:8081/usuario/${user.id_usuario}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre: datos.nombre, password: datos.password })
+            body: JSON.stringify(payload)
         })
             .then(res => res.json())
             .then(() => {
@@ -185,7 +192,13 @@ function Welcome({ user, setUser, setPage }) {
                         {mensajeOk && <p className="success-message">{mensajeOk}</p>}
                         {mensajeError && <p className="error-message">{mensajeError}</p>}
                         <div className="section-botton-center">
-                            <button className='button-index' onClick={handleGuardar}>Guardar</button>
+                            <button 
+                                className='button-index' 
+                                onClick={handleGuardar} 
+                                disabled={!hasChanges}
+                            >
+                                Guardar
+                            </button>
                         </div>
                     </form>
                 </div>

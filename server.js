@@ -55,8 +55,18 @@ app.post('/registro', (req, res) => {
 app.put('/usuario/:id', (req, res) => {
     const { id } = req.params;
     const { nombre, password } = req.body;
-    const sql = "UPDATE usuarios SET nombre = ?, password = ? WHERE id_usuario = ?";
-    db.query(sql, [nombre, password, id], (err) => {
+    
+    let sql;
+    let params;
+    if (password && password.trim() !== '') {
+        sql = "UPDATE usuarios SET nombre = ?, password = ? WHERE id_usuario = ?";
+        params = [nombre, password, id];
+    } else {
+        sql = "UPDATE usuarios SET nombre = ? WHERE id_usuario = ?";
+        params = [nombre, id];
+    }
+
+    db.query(sql, params, (err) => {
         if (err) return res.status(500).json({ error: "Error al actualizar usuario" });
         return res.json({ success: true });
     });

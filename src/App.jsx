@@ -36,7 +36,16 @@ function App() {
     const guardadoPage = localStorage.getItem('page')
     return (guardadoPage && guardadoPage !== 'undefined') ? guardadoPage : 'inicio'
   })
-  const [selectedMatch, setSelectedMatch] = useState(null)
+  const [selectedMatch, setSelectedMatch] = useState(() => {
+    try {
+      const guardado = localStorage.getItem('selectedMatch')
+      if (!guardado || guardado === 'undefined') return null
+      return JSON.parse(guardado)
+    } catch (e) {
+      console.error("Error al parsear el partido de localStorage:", e)
+      return null
+    }
+  })
 
   const handleSetUser = (nuevoUsuario) => {
     if (nuevoUsuario) {
@@ -44,6 +53,7 @@ function App() {
     } else {
       localStorage.removeItem('usuario')
       localStorage.removeItem('page')
+      localStorage.removeItem('selectedMatch')
     }
     setUser(nuevoUsuario)
   }
@@ -53,6 +63,15 @@ function App() {
     setPage(nuevaPagina)
   }
 
+  const handleSetSelectedMatch = (nuevoPartido) => {
+    if (nuevoPartido) {
+      localStorage.setItem('selectedMatch', JSON.stringify(nuevoPartido))
+    } else {
+      localStorage.removeItem('selectedMatch')
+    }
+    setSelectedMatch(nuevoPartido)
+  }
+
   if (user === null) {
     return esRegistro
       ? <Registro setEsRegistro={setEsRegistro} setUser={handleSetUser} />
@@ -60,10 +79,10 @@ function App() {
   }
 
   if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
   if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
   if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
-  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={setSelectedMatch} />
+  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={handleSetSelectedMatch} />
 }
 
 export default App
