@@ -1,10 +1,14 @@
+//HAY QUE AGREGAR EL PARTIDO 1 A LA BD (con el script en el archivo sql)
+
 import { useState, useEffect, useRef } from 'react';
- 
+
 function Inicio({ user, setUser, setPage, setSelectedMatch }) {
+
+
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const [partidos, setPartidos] = useState([]); 
     const dropdownRef = useRef(null);
- 
+
     useEffect(() => {
         fetch('http://localhost:8081/api/partidos')
             .then(response => {
@@ -26,12 +30,36 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
- 
+
     const handleCerrarSesion = () => {
         setUser(null);
         setDropdownOpen(false);
     };
- 
+
+    const simularCompra = () => {
+        const mockData = {
+            id_user: user?.id_user,
+            total: 250.00,
+            id_match: 1,      
+            seat_number: 'H-12'
+        };
+
+        fetch('http://localhost:8081/simulate-wallet', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(mockData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                alert(" Pay: ¡Compra exitosa! Revisa tus boletos en 'Mi Perfil'");
+            } else {
+                alert("Error en la simulación. Revisa la consola.");
+            }
+        })
+        .catch(err => console.error("Error:", err));
+    };
+
     return (
         <div className="background-page">
             <footer className='bar-menu'>
@@ -47,11 +75,12 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                         <div className="avatar-wrapper" ref={dropdownRef}>
                             <div
                                 className="avatar-menu"
-                                title={user.nombre}
+                                title={user?.username}
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
-                                {user.nombre.charAt(0).toUpperCase()}
+                                {user && user.username ? user.username.charAt(0).toUpperCase() : "?"}
                             </div>
+
                                 {dropdownOpen && (
                                     <div className="dropdown-menu">
                                         <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
@@ -65,13 +94,16 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                                         </button>
                                     </div>
                                 )}
+
                         </div>
                     ) : (
                         <button className='button-menu' onClick={() => setPage('login')}>Iniciar sesión</button>
                     )}
                 </div>
             </footer>
+
             <div className="container-content-dashboard">
+
                 <div className="container-dashboard-col">
                     <div className="container-banner-ini-p"></div>
                     <div className="section-banner-ini">
@@ -130,5 +162,5 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
         </div>
     );
 }
- 
+
 export default Inicio;

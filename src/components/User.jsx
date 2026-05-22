@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
  
 function Welcome({ user, setUser, setPage }) {
-    const [datos, setDatos] = useState({ nombre: '', correo: '', password: '' });
+    const [datos, setDatos] = useState({ username: '', email: '', password: '' });
     const [mensajeOk, setMensajeOk] = useState('');
     const [mensajeError, setMensajeError] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -9,7 +9,11 @@ function Welcome({ user, setUser, setPage }) {
  
     useEffect(() => {
         if (user) {
-            setDatos({ nombre: user.nombre, correo: user.correo, password: '' });
+            setDatos({ 
+            username: user.username, 
+            email: user.email,       
+            password: '' 
+        });
         }
     }, [user]);
  
@@ -24,17 +28,17 @@ function Welcome({ user, setUser, setPage }) {
     }, []);
  
     const handleGuardar = () => {
-        fetch(`http://localhost:8081/usuario/${user.id_usuario}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre: datos.nombre, password: datos.password })
-        })
-        .then(res => res.json())
-        .then(() => {
-            setMensajeOk("Datos actualizados correctamente");
-            setMensajeError('');
-            setUser(prev => ({ ...prev, nombre: datos.nombre }));
-        })
+    fetch(`http://localhost:8081/users/${user.id_user}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: datos.username, password: datos.password })
+    })
+    .then(res => res.json())
+    .then(() => {
+        setMensajeOk("Datos actualizados correctamente");
+        setMensajeError('');
+        setUser(prev => ({ ...prev, username: datos.username }));
+    })
         .catch(() => {
             setMensajeError("Error al guardar cambios");
             setMensajeOk('');
@@ -61,10 +65,10 @@ function Welcome({ user, setUser, setPage }) {
                         <div className="avatar-wrapper" ref={dropdownRef}>
                             <div
                                 className="avatar-menu"
-                                title={user.nombre}
+                                title={user?.username}
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
-                                {user.nombre.charAt(0).toUpperCase()}
+                                {user?.username?.charAt(0).toUpperCase() || "?"}
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">
@@ -99,9 +103,9 @@ function Welcome({ user, setUser, setPage }) {
                                 <input
                                     className="input-index"
                                     type='text'
-                                    placeholder={user.nombre}
-                                    value={datos.nombre}
-                                    onChange={e => setDatos({ ...datos, nombre: e.target.value })}
+                                    placeholder={user?.username || "Cargando..."}
+                                    value={datos.username}
+                                    onChange={e => setDatos({ ...datos, username: e.target.value })}
                                 />
                             </div>
                             <div className="container-input">
@@ -109,8 +113,8 @@ function Welcome({ user, setUser, setPage }) {
                                 <input
                                     className="input-index"
                                     type='email'
-                                    placeholder={user.correo}
-                                    value={datos.correo}
+                                    placeholder={user?.email || "Cargando..."}
+                                    value={datos.email}
                                     disabled
                                 />
                             </div>

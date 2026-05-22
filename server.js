@@ -23,7 +23,9 @@ const db = mysql.createConnection({
     user: 'root',
     password: '', 
     database: 'mundial_mexico',
+
     port: 3307
+
 });
 
 db.connect((err) => {
@@ -42,30 +44,47 @@ app.get('/test-db', (req, res) => {
 });
 
 app.post('/login', (req, res) => {
+    console.log("Datos recibidos del cliente:", req.body);
     const { username, password } = req.body;
-    const sql = "SELECT id_usuario, nombre, correo FROM usuarios WHERE nombre = ? AND password = ?";
+
+    //console.log("Intentando login con:", username, password);
+    
+    const sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+    
     db.query(sql, [username, password], (err, data) => {
+        console.log("Resultado de la base de datos:", data);
         if (err) return res.status(500).json(err);
-        if (data.length > 0) return res.json({ success: true, usuario: data[0] });
-        return res.status(401).json({ alerta: "Usuario o contraseña no coinciden" });
+        
+        if (data.length > 0) {
+            return res.json(data[0]);
+        } else {
+            return res.status(401).json({ alerta: "Usuario o contraseña no coinciden" });
+        }
     });
 });
 
-app.post('/registro', (req, res) => {
-    const { nombre, email, password } = req.body;
-    const sql = "INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)";
-    db.query(sql, [nombre, email, password], (err, result) => {
-        if(err) return res.status(500).json({ error: "Error al registrar usuario" });
+app.post('/register', (req, res) => { 
+    const { username, email, password } = req.body;
+    const sql = "INSERT INTO users (username, email, password) VALUES (?, ?, ?)";
+    db.query(sql, [username, email, password], (err, result) => {
+        if(err) {
+            console.log(err); 
+            return res.status(500).json({ error: "Error al registrar usuario" });
+        }
         return res.json("Success");
     });
 });
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/users/:id', (req, res) => { 
     const { id } = req.params;
-    const { nombre, password } = req.body;
-    const sql = "UPDATE usuarios SET nombre = ?, password = ? WHERE id_usuario = ?";
-    db.query(sql, [nombre, password, id], (err) => {
-        if (err) return res.status(500).json({ error: "Error al actualizar usuario" });
+    const { username, password } = req.body; 
+    const sql = "UPDATE users SET username = ?, password = ? WHERE id_user = ?";
+    
+    db.query(sql, [username, password, id], (err) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ error: "Error al actualizar usuario" });
+        }
         return res.json({ success: true });
     });
 });
@@ -225,5 +244,6 @@ app.get('/api/asientos-ocupados/:id_partido/:id_zona', (req, res) => {
         
         const asientosOcupados = results.map(r => r.asiento_nomenclatura);
         res.json({ asientos: asientosOcupados });
-    });
+
+           });
 });

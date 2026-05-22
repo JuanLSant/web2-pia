@@ -20,21 +20,23 @@ import './styles/asientos.css'
 
 function App() {
   const [user, setUser] = useState(() => {
-    const guardado = localStorage.getItem('usuario')
+    const guardado = localStorage.getItem('user') 
     return guardado ? JSON.parse(guardado) : null
   })
+
   const [esRegistro, setEsRegistro] = useState(false)
   const [page, setPage] = useState(() => {
     return localStorage.getItem('page') || 'inicio'
   })
+
   const [selectedMatch, setSelectedMatch] = useState(null) 
   const [zonaElegida, setZonaElegida] = useState(null)
 
   const handleSetUser = (nuevoUsuario) => {
     if (nuevoUsuario) {
-      localStorage.setItem('usuario', JSON.stringify(nuevoUsuario))
+      localStorage.setItem('user', JSON.stringify(nuevoUsuario))
     } else {
-      localStorage.removeItem('usuario')
+      localStorage.removeItem('user')
       localStorage.removeItem('page')
     }
     setUser(nuevoUsuario)
