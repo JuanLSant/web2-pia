@@ -8,24 +8,18 @@ function Asientos({ user, setUser, setPage, selectedMatch, zonaElegida }) {
     const googlePayContainerRef = useRef(null);
 
     // ── Estados de SeleccionAsientos ──────────────────────────────
-    const [mapa] = useState([
-        ['L', 'L', 'O', 'L', 'L', 'L', 'L', 'L', 'O', 'L', 'L', 'L'],
-        ['O', 'O', 'L', 'L', 'L', 'L', 'O', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'O', 'O'],
-        ['O', 'L', 'L', 'L', 'O', 'O', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'L', 'O', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'O', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
-        ['L', 'L', 'L', 'L', 'L', 'L', 'O', 'O', 'O', 'L', 'L', 'L'],
-    ]);
+    const [mapa] = useState(Array.from({ length: 8 }, () => Array(12).fill('L')));
+    
     const [seleccionados, setSeleccionados] = useState([]);
 
     const [datosZonaBD, setDatosZonaBD] = useState(null);
+ 
+    const [asientosOcupados, setAsientosOcupados] = useState([]);   
 
     const precio = datosZonaBD?.precio || 0;
     // ─────────────────────────────────────────────────────────────
     useEffect(() => {
-        if (zonaElegida?.id) {
+        if (zonaElegida?.id && selectedMatch?.id_partido) {
             fetch(`http://localhost:8081/api/zonas/${zonaElegida.id}`)
                 .then(res => {
                     if (!res.ok) throw new Error('Error al obtener la zona');
@@ -35,8 +29,16 @@ function Asientos({ user, setUser, setPage, selectedMatch, zonaElegida }) {
                     setDatosZonaBD(data);
                 })
                 .catch(err => console.error("Error cargando precio de la BD:", err));
+
+                fetch(`http://localhost:8081/api/asientos-ocupados/${selectedMatch.id_partido}/${zonaElegida.id}`)
+            .then(res => res.json())
+            .then(data => {
+
+                setAsientosOcupados(data.asientos); 
+            })
+            .catch(err => console.error("Error asientos:", err));
         }
-    }, [zonaElegida]);
+    }, [zonaElegida, selectedMatch]);
     
     useEffect(() => {
         const handleClickOutside = (e) => {
@@ -252,9 +254,9 @@ function Asientos({ user, setUser, setPage, selectedMatch, zonaElegida }) {
                             <div className="grid-estadio">
                                 {mapa.map((fila, i) => (
                                     <div key={i} className="fila-asientos">
-                                        {fila.map((estado, j) => {
+                                        {fila.map((_, j) => {
                                             const id = `${i}-${j}`;
-                                            const estaOcupado = estado === 'O';
+                                            const estaOcupado = asientosOcupados.includes(id);
                                             return (
                                                 <label key={id} className="asiento-label">
                                                     <input

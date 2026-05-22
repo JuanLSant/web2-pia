@@ -360,7 +360,7 @@ function Zona({ user, setUser, setPage, selectedMatch, setZonaElegida }) {
                                                 d={seleccion.dPath} 
                                                 fill="#FFD700" 
                                                 transform="scale(1.5)" 
-                                                transform-origin="center"
+                                                transformOrigin="center"
                                             />
                                         </svg>
                                     </div>

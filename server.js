@@ -121,15 +121,18 @@ app.post('/api/crear-boleto-wallet', async (req, res) => {
                     }
                     
                     try {
+
                         const linkWallet = await generarLink(correo); 
+                        console.log("LINK GENERADO PARA PRUEBA:", linkWallet);
+
                         const mailOptions = {
                             from: '"Ticketmaster" <webpagina222@gmail.com>',
                             to: correo,
-                            subject: '¡Confirmación de Compra - Tus Boletos están Listos!',
+                            subject: 'Confirmación de Compra - Tus Boletos están Listos',
                             html: `
                                 <div style="background-color: #1a1a1a; color: white; padding: 30px; font-family: Arial, sans-serif; border-radius: 12px; max-width: 500px; margin: 0 auto; border: 1px solid #ff9800;">
                                     <h2 style="color: #ff9800; text-align: center;">¡Gracias por tu compra!</h2>
-                                    <p>Tus boletos están listos para añadir a tu celular:</p>
+                                    <p>Tus boletos estarán disponibles en tu billetera de Google y en nuestro sitio web</p>
                                     <div style="text-align: center; margin: 20px 0;">
                                         <a href="${linkWallet}">
                                             <img src="https://developers.google.com/wallet/images/add-to-google-wallet-button.png" alt="Añadir a Google Wallet" style="width: 200px;">
@@ -147,7 +150,7 @@ app.post('/api/crear-boleto-wallet', async (req, res) => {
 
                     } catch (error) {
                         console.error("Error al generar el pase o enviar correo:", error);
-                        return res.status(200).json({ success: true, message: "¡Compra procesada, pero ocurrió un error al enviar el pase a Wallet!" });
+                        return res.status(500).json({ success: true, message: "¡Compra procesada, pero ocurrió un error al enviar el pase a Wallet!" });
                     }
                 }); 
             }); 
@@ -207,5 +210,20 @@ app.get('/api/partidos', (req, res) => {
             return res.status(500).json({ error: 'Error al consultar partidos' });
         }
         res.json(results);
+    });
+});
+
+app.get('/api/asientos-ocupados/:id_partido/:id_zona', (req, res) => {
+    const { id_partido, id_zona } = req.params;
+    const sql = "SELECT asiento_nomenclatura FROM boletos WHERE id_partido = ? AND id_zona = ?";
+    
+    db.query(sql, [id_partido, id_zona], (err, results) => {
+        if (err) {
+            console.error("Error en BD:", err);
+            return res.status(500).json({ error: "Error al consultar la BD" });
+        }
+        
+        const asientosOcupados = results.map(r => r.asiento_nomenclatura);
+        res.json({ asientos: asientosOcupados });
     });
 });
