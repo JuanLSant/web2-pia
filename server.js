@@ -13,9 +13,9 @@ app.use('/uploads', express.static('uploads'));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '12345', 
+    password: '12345',
     database: 'mundial_mexico',
-    port: 3306 
+    port: 3306
 });
 
 db.connect((err) => {
@@ -47,7 +47,7 @@ app.post('/registro', (req, res) => {
     const { nombre, email, password } = req.body;
     const sql = "INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)";
     db.query(sql, [nombre, email, password], (err, result) => {
-        if(err) return res.status(500).json({ error: "Error al registrar usuario" });
+        if (err) return res.status(500).json({ error: "Error al registrar usuario" });
         return res.json("Success");
     });
 });
