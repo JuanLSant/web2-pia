@@ -1,6 +1,5 @@
-
 .index-background {
-    background-image: url(/src/assets/Imagen01.jpeg); 
+    background-image: url(/src/assets/Imagen01.jpeg);
     color: #00796f;
     font-family: 'Inter', 'Segoe UI', Roboto, sans-serif;
     min-height: 100vh;
@@ -42,7 +41,7 @@
     background: #161b22;
     padding: 40px;
     border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -50,19 +49,14 @@
 
 .cancha-linea {
     width: 100%;
-    height: 35px;
+    height: 8px;
     background: linear-gradient(90deg, #2ecc71, #27ae60);
     margin-bottom: 50px;
     border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.1rem;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: 6px;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
-    box-shadow: 0 0 25px rgba(46, 204, 113, 0.6);
+    text-align: center;
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.5);
+    box-shadow: 0 0 20px rgba(46, 204, 113, 0.4);
 }
 
 .grid-estadio {
@@ -78,15 +72,15 @@
 
 
 .input-asiento-oculto {
-    display: none; 
+    display: none;
 }
 
 .asiento-visual {
     display: block;
     width: 28px;
     height: 28px;
-    background-color: #d1d5db; 
-    border-radius: 6px 6px 2px 2px; 
+    background-color: #d1d5db;
+    border-radius: 6px 6px 2px 2px;
     cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     position: relative;
@@ -99,109 +93,30 @@
 }
 
 
-.input-asiento-oculto:checked + .asiento-visual {
-    background-color: #f39c12; 
+.input-asiento-oculto:checked+.asiento-visual {
+    background-color: #f39c12;
     box-shadow: 0 0 15px rgba(243, 156, 18, 0.6);
     transform: scale(1.15);
 }
 
 
 .asiento-ocupado {
-    background-color: #333 !important; 
+    background-color: #333 !important;
     cursor: not-allowed;
     opacity: 0.6;
 }
 
-.asiento-reservado {
-    background-color: #e74c3c !important; 
-    cursor: not-allowed;
-    opacity: 0.7;
-    box-shadow: 0 0 8px rgba(231, 76, 60, 0.4);
-}
-
-
-.columna-derecha {
-    flex: 1;
-    width: 350px;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    position: sticky;
-    top: 40px;
-}
 
 .panel-pago {
-    width: 100%;
+    flex: 1;
+    width: 350px;
     background: #1f2937;
     padding: 35px;
     border-radius: 20px;
     height: fit-content;
+    position: sticky;
     border: 1px solid #374151;
     font-size: 1rem;
-}
-
-.temporizador-card {
-    background: #1f2937;
-    padding: 20px;
-    border-radius: 20px;
-    border: 1px solid #374151;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    transition: all 0.3s ease;
-}
-
-.temporizador-card.activo {
-    border-color: #e74c3c;
-    box-shadow: 0 0 15px rgba(231, 76, 60, 0.3);
-}
-
-.temporizador-titulo {
-    font-size: 0.85rem;
-    color: #9ca3af;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: bold;
-}
-
-.temporizador-reloj {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: #e74c3c;
-    font-family: monospace;
-    letter-spacing: 2px;
-    text-shadow: 0 0 10px rgba(231, 76, 60, 0.4);
-    animation: pulse-timer 1s infinite alternate;
-}
-
-.temporizador-reloj.inactivo {
-    color: #9ca3af;
-    text-shadow: none;
-    animation: none;
-}
-
-.temporizador-barra {
-    width: 100%;
-    height: 6px;
-    background: #374151;
-    border-radius: 3px;
-    overflow: hidden;
-}
-
-.temporizador-progreso {
-    height: 100%;
-    transition: width 1s linear;
-}
-
-@keyframes pulse-timer {
-    0% {
-        transform: scale(1);
-    }
-    100% {
-        transform: scale(1.03);
-    }
 }
 
 .panel-pago h3 {
@@ -235,7 +150,8 @@
     padding: 15px;
     border: none;
     border-radius: 12px;
-    background: #f1c40f; /* Amarillo */
+    background: #f1c40f;
+    /* Amarillo */
     color: #000;
     font-weight: bold;
     font-size: 1rem;
@@ -258,116 +174,4 @@
     overflow-y: auto;
     padding-right: 15px;
     margin-bottom: 10px;
-}
-
-.btn-finalizar {
-    width: 100%;
-    margin-top: 15px;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    background: #2ecc71; /* Green */
-    color: #fff;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.btn-finalizar:hover {
-    background: #27ae60;
-}
-
-.btn-cancelar {
-    width: 100%;
-    padding: 15px;
-    border: none;
-    border-radius: 12px;
-    background: #e74c3c; /* Red */
-    color: #fff;
-    font-weight: bold;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background 0.3s ease;
-}
-
-.btn-cancelar:hover {
-    background: #c0392b;
-}
-
-.asientos-bloqueados {
-    cursor: not-allowed !important;
-    opacity: 0.8;
-}
-
-.asientos-bloqueados:hover {
-    transform: none !important;
-    filter: none !important;
-}
-
-/* --- Responsive Media Queries --- */
-@media (max-width: 992px) {
-    .background-page {
-        height: auto !important;
-        min-height: 100vh;
-        overflow: auto !important;
-    }
-    
-    .container-content-dashboard {
-        height: auto !important;
-        overflow: visible !important;
-    }
-
-    .container-dashboard-col {
-        height: auto !important;
-        overflow: visible !important;
-        padding-bottom: 80px; /* Space for footer menu */
-    }
-
-    .layout-principal {
-        flex-direction: column;
-        align-items: center;
-        width: 100%;
-        gap: 30px;
-    }
-
-    .contenedor-asientos {
-        width: 100%;
-        max-width: 500px;
-        min-width: unset;
-        padding: 20px;
-    }
-
-    .columna-derecha {
-        width: 100%;
-        max-width: 500px;
-        position: static; /* Remove sticky on mobile */
-    }
-}
-
-@media (max-width: 500px) {
-    .asiento-visual {
-        width: 22px;
-        height: 22px;
-        border-radius: 4px 4px 1px 1px;
-    }
-    
-    .fila-asientos {
-        gap: 6px;
-    }
-    
-    .grid-estadio {
-        gap: 8px;
-    }
-
-    .header-estadio h1 {
-        font-size: 1.8rem;
-    }
-    
-    .cancha-linea {
-        font-size: 0.95rem;
-        height: 28px;
-        letter-spacing: 4px;
-        margin-bottom: 30px;
-    }
 }

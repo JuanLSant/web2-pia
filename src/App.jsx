@@ -1,6 +1,8 @@
 import Login from './components/Login'
 import User from './components/User'
 import Registro from './components/Registro'
+import SeleccionAsientos from './components/asientos'
+import FAQ from './components/FQA'
 import Inicio from './components/Inicio'
 import Zona from './components/Zona'
 import Asientos from './components/Asientos'
@@ -15,9 +17,7 @@ import './styles/inputs.css'
 import './styles/buttons.css'
 import './styles/error-message.css'
 import './styles/auth-links.css'
-import './styles/inicio.css'
-import './styles/asientos.css'
-import './styles/Login.css'
+import './styles/asientos.css';
 
 function App() {
   const [user, setUser] = useState(() => {
@@ -78,11 +78,9 @@ function App() {
       : <Login setUser={handleSetUser} setEsRegistro={setEsRegistro} />
   }
 
-  if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
-  if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
-  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={handleSetSelectedMatch} />
+  if (page === 'perfil') return <Welcome user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'asientos') return <SeleccionAsientos user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} />
 }
 
 export default App
