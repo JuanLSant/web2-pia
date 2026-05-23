@@ -1,18 +1,22 @@
 import { useState, useEffect, useRef } from 'react';
- 
+import ticketImg from '../assets/ticket-base.svg';
+
 function Welcome({ user, setUser, setPage }) {
     const [datos, setDatos] = useState({ nombre: '', correo: '', password: '' });
     const [mensajeOk, setMensajeOk] = useState('');
     const [mensajeError, setMensajeError] = useState('');
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
- 
+    const [modalAbierto, setModalAbierto] = useState(false);
+    const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
+    const fileInputRef = useRef(null);
+
     useEffect(() => {
         if (user) {
             setDatos({ nombre: user.nombre, correo: user.correo, password: '' });
         }
     }, [user]);
- 
+
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -22,30 +26,86 @@ function Welcome({ user, setUser, setPage }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
- 
+
+    const hasChanges = datos.nombre !== (user?.nombre || '') || datos.password !== '';
+
     const handleGuardar = () => {
+        const payload = { nombre: datos.nombre };
+        if (datos.password.trim() !== '') {
+            payload.password = datos.password;
+        }
+
         fetch(`http://localhost:8081/usuario/${user.id_usuario}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre: datos.nombre, password: datos.password })
+            body: JSON.stringify(payload)
         })
-        .then(res => res.json())
-        .then(() => {
-            setMensajeOk("Datos actualizados correctamente");
-            setMensajeError('');
-            setUser(prev => ({ ...prev, nombre: datos.nombre }));
-        })
-        .catch(() => {
-            setMensajeError("Error al guardar cambios");
-            setMensajeOk('');
-        });
+            .then(res => res.json())
+            .then(() => {
+                setMensajeOk("Datos actualizados correctamente");
+                setMensajeError('');
+                setUser(prev => ({ ...prev, nombre: datos.nombre }));
+            })
+            .catch(() => {
+                setMensajeError("Error al guardar cambios");
+                setMensajeOk('');
+            });
     };
- 
+
     const handleCerrarSesion = () => {
         setUser(null);
         setDropdownOpen(false);
     };
- 
+
+    const triggerSeleccionarArchivo = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const handleSeleccionarImagen = (e) => {
+        const archivo = e.target.files[0];
+        if (!archivo) return;
+
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            setImagenSeleccionada(reader.result);
+        };
+        reader.readAsDataURL(archivo);
+    };
+
+    const handleSubirImagen = () => {
+        if (!imagenSeleccionada) return;
+
+        fetch(`http://localhost:8081/usuario/${user.id_usuario}/imagen`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ imagen: imagenSeleccionada })
+        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    setMensajeOk("Foto de perfil actualizada correctamente");
+                    setMensajeError('');
+                    setUser(prev => ({ ...prev, imagen_url: data.imagen_url }));
+                    setModalAbierto(false);
+                    setImagenSeleccionada(null);
+                } else {
+                    setMensajeError("Error al actualizar la foto de perfil");
+                    setMensajeOk('');
+                }
+            })
+            .catch(() => {
+                setMensajeError("Error de conexión al subir la imagen");
+                setMensajeOk('');
+            });
+    };
+
+    const handleCancelar = () => {
+        setModalAbierto(false);
+        setImagenSeleccionada(null);
+    };
+
     return (
         <div className="background-page">
             <footer className='bar-menu'>
@@ -64,7 +124,11 @@ function Welcome({ user, setUser, setPage }) {
                                 title={user.nombre}
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
-                                {user.nombre.charAt(0).toUpperCase()}
+                                {user.imagen_url ? (
+                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                ) : (
+                                    user.nombre.charAt(0).toUpperCase()
+                                )}
                             </div>
                             {dropdownOpen && (
                                 <div className="dropdown-menu">
@@ -89,8 +153,8 @@ function Welcome({ user, setUser, setPage }) {
                 <div className="section-left">
                     <form className='form-datauser' onSubmit={e => e.preventDefault()}>
                         <div className="section-top-center">
-                            <div className="container-image">
-                                <img src='src/assets/user-t.jpg' />
+                            <div className="container-image" onClick={() => setModalAbierto(true)} style={{ cursor: 'pointer' }}>
+                                <img src={user.imagen_url ? `http://localhost:8081/${user.imagen_url}` : 'src/assets/user-t.jpg'} alt="Perfil" />
                             </div>
                         </div>
                         <div className="section-middle-center">
@@ -128,7 +192,13 @@ function Welcome({ user, setUser, setPage }) {
                         {mensajeOk && <p className="success-message">{mensajeOk}</p>}
                         {mensajeError && <p className="error-message">{mensajeError}</p>}
                         <div className="section-botton-center">
-                            <button className='button-index' onClick={handleGuardar}>Guardar</button>
+                            <button 
+                                className='button-index' 
+                                onClick={handleGuardar} 
+                                disabled={!hasChanges}
+                            >
+                                Guardar
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -137,16 +207,53 @@ function Welcome({ user, setUser, setPage }) {
                         <h1>Mis Boletos</h1>
                     </div>
                     <div className="section-botton">
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
-                        <div className="tarjeta-banner"></div>
+                        {[...Array(5)].map((_, i) => (
+                            <div key={i} className="ticket-svg">
+                                <img src={ticketImg} alt="Boleto" />
+                            </div>
+                        ))}
                     </div>
                 </div>
             </div>
+
+            <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleSeleccionarImagen}
+                accept="image/*"
+                style={{ display: 'none' }}
+            />
+
+            {modalAbierto && (
+                <div className="profile-modal-overlay">
+                    <div className="profile-modal-card">
+                        <h2 className="profile-modal-title">Cambiar icono de usuario</h2>
+                        
+                        {imagenSeleccionada && (
+                            <div className="profile-modal-preview">
+                                <img src={imagenSeleccionada} alt="Preview" />
+                            </div>
+                        )}
+
+                        <div className="profile-modal-buttons">
+                            {imagenSeleccionada ? (
+                                <button className="profile-modal-btn primary" onClick={handleSubirImagen}>
+                                    Cargar avatar
+                                </button>
+                            ) : (
+                                <button className="profile-modal-btn primary" onClick={triggerSeleccionarArchivo}>
+                                    Seleccionar imagen
+                                </button>
+                            )}
+                            <button className="profile-modal-btn secondary" onClick={handleCancelar}>
+                                Cancelar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
- 
+
 export default Welcome;

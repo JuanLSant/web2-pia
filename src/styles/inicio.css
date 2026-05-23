@@ -60,12 +60,12 @@
     gap: clamp(20px, 35vw, 800px); 
     padding: clamp(12px, 2vh, 24px) clamp(12px, 2vw, 24px);
 
-    cursor: pointer;                        /* ← manito al hover */
-    transition: background-color 0.2s ease; /* ← transición suave */
+    cursor: pointer;                        
+    transition: background-color 0.2s ease; 
 }
 
 .tarjeta-banner:hover {
-    background-color: #2e2e2e;             /* ← feedback visual */
+    background-color: #2e2e2e;             
 }
 
 @media (max-width: 600px) {
@@ -159,7 +159,7 @@
     gap: clamp(10px, 1.5vh, 20px);
     overflow: visible;
     padding: 0 clamp(20px, 3vw, 50px);
-    padding-left: clamp(40px, 5vw, 80px); 
+    padding-left: clamp(80px, 5vw, 100px); 
 }
 
 .container-der-zone {
@@ -187,7 +187,14 @@
 
 .medio-E {
     height: 70%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 
+.medio-E svg {
+    width: 75%;
+    height: 75%;
 }
 
 
@@ -198,11 +205,111 @@
     
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1200px) {
     .container-izq-zone {
-        display: none;
+        padding-left: clamp(20px, 3vw, 40px);
+        padding-right: clamp(10px, 2vw, 20px);
+        width: clamp(280px, 22vw, 360px);
+    }
+    .match-card {
+        width: 100%;
+        max-width: 280px;
+        height: auto;
+        aspect-ratio: 340 / 480;
+    }
+    .match-card__vs {
+        font-size: 3.5rem;
     }
 }
+
+@media (max-width: 768px) {
+    .container-dashboard-col {
+        height: auto;
+        overflow: visible;
+    }
+
+    .container-cols-zone {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+        padding-top: 15px;
+    }
+
+    .container-izq-zone {
+        width: 100%;
+        max-width: 480px;
+        padding: 0 15px;
+        flex-shrink: 1;
+        align-items: center;
+    }
+
+    .match-card {
+        width: 100%;
+        max-width: 260px;
+        height: auto;
+        aspect-ratio: 340 / 480;
+    }
+
+    .match-card__vs {
+        font-size: 3rem;
+    }
+
+    .tablero-fechas {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        padding: 0;
+    }
+
+    .fecha-item {
+        padding: 12px 10px;
+        flex: 1 1 calc(50% - 8px);
+        max-width: calc(50% - 8px);
+        box-sizing: border-box;
+    }
+
+    .fecha-texto {
+        font-size: 0.85rem;
+    }
+
+    .container-der-zone {
+        width: 100%;
+        flex-direction: column;
+        height: auto;
+        overflow: visible;
+        border-radius: 8px;
+    }
+
+    .lado-izquierdo {
+        width: 100%;
+        height: auto;
+    }
+
+    .medio-E {
+        height: auto;
+        padding: 15px 0;
+    }
+
+    .medio-E svg {
+        width: 90%;
+        max-width: 420px;
+        height: auto;
+    }
+
+    .lado-derecho {
+        width: 100%;
+        height: auto;
+    }
+
+    .lado-derecho-content {
+        height: auto;
+        padding: 15px;
+    }
+}
+
+
 
 .lado-derecho-content {
     display: flex;
@@ -254,7 +361,7 @@
 }
 
 .lado-derecho-footer {
-    margin-top: auto; /* ← empuja el botón hasta abajo */
+    margin-top: auto; 
     width: 100%;
     display: flex;
     justify-content: center;

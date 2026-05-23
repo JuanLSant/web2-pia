@@ -17,17 +17,35 @@ import './styles/error-message.css'
 import './styles/auth-links.css'
 import './styles/inicio.css'
 import './styles/asientos.css'
+import './styles/Login.css'
 
 function App() {
   const [user, setUser] = useState(() => {
-    const guardado = localStorage.getItem('usuario')
-    return guardado ? JSON.parse(guardado) : null
+    try {
+      const guardado = localStorage.getItem('usuario')
+      if (!guardado || guardado === 'undefined') return null
+      return JSON.parse(guardado)
+    } catch (e) {
+      console.error("Error al parsear el usuario de localStorage:", e)
+      localStorage.removeItem('usuario')
+      return null
+    }
   })
   const [esRegistro, setEsRegistro] = useState(false)
   const [page, setPage] = useState(() => {
-    return localStorage.getItem('page') || 'inicio'
+    const guardadoPage = localStorage.getItem('page')
+    return (guardadoPage && guardadoPage !== 'undefined') ? guardadoPage : 'inicio'
   })
-  const [selectedMatch, setSelectedMatch] = useState(null) // 👈 nuevo estado
+  const [selectedMatch, setSelectedMatch] = useState(() => {
+    try {
+      const guardado = localStorage.getItem('selectedMatch')
+      if (!guardado || guardado === 'undefined') return null
+      return JSON.parse(guardado)
+    } catch (e) {
+      console.error("Error al parsear el partido de localStorage:", e)
+      return null
+    }
+  })
 
   const handleSetUser = (nuevoUsuario) => {
     if (nuevoUsuario) {
@@ -35,6 +53,7 @@ function App() {
     } else {
       localStorage.removeItem('usuario')
       localStorage.removeItem('page')
+      localStorage.removeItem('selectedMatch')
     }
     setUser(nuevoUsuario)
   }
@@ -44,6 +63,15 @@ function App() {
     setPage(nuevaPagina)
   }
 
+  const handleSetSelectedMatch = (nuevoPartido) => {
+    if (nuevoPartido) {
+      localStorage.setItem('selectedMatch', JSON.stringify(nuevoPartido))
+    } else {
+      localStorage.removeItem('selectedMatch')
+    }
+    setSelectedMatch(nuevoPartido)
+  }
+
   if (user === null) {
     return esRegistro
       ? <Registro setEsRegistro={setEsRegistro} setUser={handleSetUser} />
@@ -51,10 +79,10 @@ function App() {
   }
 
   if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} />
+  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
   if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} /> // 👈
-  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={setSelectedMatch} /> // 👈
+  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
+  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={handleSetSelectedMatch} />
 }
 
 export default App
