@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
@@ -409,6 +412,115 @@ app.post('/comprar-asientos', (req, res) => {
             });
         });
     });
+});
+
+app.get('/usuario/:id/boletos', (req, res) => {
+    const { id } = req.params;
+    const sql = `
+        SELECT 
+            b.id_boleto,
+            b.total,
+            DATE_FORMAT(b.fecha, '%Y-%m-%d %H:%i:%s') AS fecha,
+            p.estadio,
+            p.casa,
+            p.visitante,
+            z.nombre AS zona_nombre,
+            ar.nomenclatura AS area_nomenclatura,
+            asi.nomenclatura AS asiento_nomenclatura
+        FROM boletos b
+        JOIN asientos_partido ap ON b.id_asiento_partido = ap.id
+        JOIN partidos p ON ap.id_partido = p.id_partido
+        JOIN zonas z ON ap.id_zona = z.id_zona
+        JOIN areas ar ON ap.id_area = ar.id_area
+        JOIN asientos asi ON ap.id_asiento = asi.id_asiento
+        WHERE b.id_usuario = ?
+        ORDER BY b.fecha DESC
+    `;
+    db.query(sql, [id], (err, data) => {
+        if (err) {
+            console.error("Error al obtener boletos del usuario:", err);
+            return res.status(500).json({ error: "Error al obtener boletos" });
+        }
+        return res.json({ success: true, boletos: data });
+    });
+});
+
+app.post('/ayuda/chat', async (req, res) => {
+    const { message, history } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey || apiKey.trim() === '') {
+        return res.json({
+            success: true,
+            reply: "¡Hola! Para que pueda ayudarte con búsquedas en internet, por favor configura la clave `GEMINI_API_KEY` en el archivo `.env` en la raíz de tu servidor con una clave obtenida en Google AI Studio (https://aistudio.google.com/)."
+        });
+    }
+
+    try {
+        const contents = [];
+
+        // Mapear historial al formato de Gemini
+        if (history && history.length > 0) {
+            history.forEach(msg => {
+                contents.push({
+                    role: msg.sender === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.text }]
+                });
+            });
+        }
+
+        // Agregar mensaje actual del usuario
+        contents.push({
+            role: 'user',
+            parts: [{ text: message }]
+        });
+
+        const requestBody = {
+            contents: contents,
+            tools: [
+                { googleSearch: {} }
+            ],
+            systemInstruction: {
+                parts: [
+                    {
+                        text: "Eres un asistente virtual de ayuda para la aplicación de venta de boletos del Mundial de la FIFA 2026 en México (estadios: Estadio BBVA en Monterrey, Estadio Azteca en CDMX, Estadio Akron en Guadalajara). Ayudas a los usuarios a responder dudas del sistema (como que las reservas expiran en 5 minutos, o cómo ver su QR en 'Mi perfil' -> 'Mis Boletos'). Además, si te preguntan sobre partidos, fechas, estadios o noticias del Mundial, utiliza la búsqueda de Google para dar respuestas reales, verídicas y actualizadas en español de manera amigable y concisa."
+                    }
+                ]
+            }
+        };
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const errText = await response.text();
+            console.error("Error en respuesta de Gemini API:", errText);
+            throw new Error(`Gemini API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+        
+        let replyText = "";
+        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+            replyText = data.candidates[0].content.parts[0].text;
+        } else {
+            replyText = "Lo siento, no pude procesar una respuesta en este momento.";
+        }
+
+        return res.json({
+            success: true,
+            reply: replyText
+        });
+
+    } catch (error) {
+        console.error("Error al comunicarse con Gemini API:", error);
+        return res.status(500).json({ error: "Error al procesar el mensaje con la IA" });
+    }
 });
 
 app.listen(8081, () => {
