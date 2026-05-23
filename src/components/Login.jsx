@@ -71,7 +71,7 @@ function Login({ setUser, setEsRegistro }) {
             if (data.success) {
                 setError(false);
                 console.log("Datos usuario:", data.usuario);
-                
+
                 // Guardar o borrar usuario en localStorage según el checkbox
                 if (rememberMe) {
                     localStorage.setItem('remembered_username', username);
@@ -211,13 +211,13 @@ function Login({ setUser, setEsRegistro }) {
                                     />
                                     <span>Recordar usuario</span>
                                 </label>
-                                <span 
-                                    className="forgot-password-link" 
-                                    onClick={() => { 
-                                        setView("forgot"); 
-                                        setError(false); 
-                                        setErrorMessage(""); 
-                                        setSuccessMessage(""); 
+                                <span
+                                    className="forgot-password-link"
+                                    onClick={() => {
+                                        setView("forgot");
+                                        setError(false);
+                                        setErrorMessage("");
+                                        setSuccessMessage("");
                                     }}
                                 >
                                     ¿Olvidaste tu contraseña?
@@ -309,14 +309,14 @@ function Login({ setUser, setEsRegistro }) {
                             {successMessage && !successMessage.includes("código") && <p className="success-message">{successMessage}</p>}
 
                             <p className="register-row">
-                                <span 
-                                    className="register-link" 
-                                    onClick={() => { 
-                                        setView("login"); 
-                                        setError(false); 
-                                        setErrorMessage(""); 
-                                        setSuccessMessage(""); 
-                                        setRecoveryEmail(""); 
+                                <span
+                                    className="register-link"
+                                    onClick={() => {
+                                        setView("login");
+                                        setError(false);
+                                        setErrorMessage("");
+                                        setSuccessMessage("");
+                                        setRecoveryEmail("");
                                         setVerificationCode("");
                                         setNewPassword("");
                                     }}
