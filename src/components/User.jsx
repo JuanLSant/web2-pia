@@ -10,10 +10,24 @@ function Welcome({ user, setUser, setPage }) {
     const [modalAbierto, setModalAbierto] = useState(false);
     const [imagenSeleccionada, setImagenSeleccionada] = useState(null);
     const fileInputRef = useRef(null);
+    const [boletos, setBoletos] = useState([]);
 
     useEffect(() => {
         if (user) {
             setDatos({ nombre: user.nombre, correo: user.correo, password: '' });
+        }
+    }, [user]);
+
+    useEffect(() => {
+        if (user && user.id_usuario) {
+            fetch(`http://localhost:8081/usuario/${user.id_usuario}/boletos`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.success) {
+                        setBoletos(data.boletos);
+                    }
+                })
+                .catch(err => console.error("Error al obtener boletos:", err));
         }
     }, [user]);
 
@@ -207,11 +221,37 @@ function Welcome({ user, setUser, setPage }) {
                         <h1>Mis Boletos</h1>
                     </div>
                     <div className="section-botton">
-                        {[...Array(5)].map((_, i) => (
-                            <div key={i} className="ticket-svg">
-                                <img src={ticketImg} alt="Boleto" />
-                            </div>
-                        ))}
+                        {boletos.length > 0 ? (
+                            boletos.map((boleto, i) => (
+                                <div key={boleto.id_boleto || i} className="ticket-container">
+                                    <img src={ticketImg} className="ticket-base" alt="Boleto" />
+                                    <div className="ticket-text ticket-estadio">{boleto.estadio}</div>
+                                    {(() => {
+                                        const matchText = `${boleto.casa} VS ${boleto.visitante}`;
+                                        const isLong = matchText.length > 20;
+                                        return (
+                                            <div className={`ticket-text ticket-vs ${isLong ? 'ticket-vs-long' : ''}`}>
+                                                {isLong ? (
+                                                    <>
+                                                        <div>{boleto.casa} VS</div>
+                                                        <div>{boleto.visitante}</div>
+                                                    </>
+                                                ) : (
+                                                    matchText
+                                                )}
+                                            </div>
+                                        );
+                                    })()}
+                                    <div className="ticket-text ticket-zona">{boleto.zona_nombre}</div>
+                                    <div className="ticket-text ticket-area">{`Area: ${boleto.area_nomenclatura}`}</div>
+                                    <div className="ticket-text ticket-asientos">{`Asientos: ${boleto.asiento_nomenclatura}`}</div>
+                                    <div className="ticket-text ticket-costo">{`Costo : ${parseFloat(boleto.total).toFixed(2)}`}</div>
+                                    <div className="ticket-text ticket-fecha">{boleto.fecha}</div>
+                                </div>
+                            ))
+                        ) : (
+                            <p className="no-tickets-message">No tienes boletos comprados aún.</p>
+                        )}
                     </div>
                 </div>
             </div>

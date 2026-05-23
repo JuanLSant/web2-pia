@@ -411,6 +411,37 @@ app.post('/comprar-asientos', (req, res) => {
     });
 });
 
+app.get('/usuario/:id/boletos', (req, res) => {
+    const { id } = req.params;
+    const sql = `
+        SELECT 
+            b.id_boleto,
+            b.total,
+            DATE_FORMAT(b.fecha, '%Y-%m-%d %H:%i:%s') AS fecha,
+            p.estadio,
+            p.casa,
+            p.visitante,
+            z.nombre AS zona_nombre,
+            ar.nomenclatura AS area_nomenclatura,
+            asi.nomenclatura AS asiento_nomenclatura
+        FROM boletos b
+        JOIN asientos_partido ap ON b.id_asiento_partido = ap.id
+        JOIN partidos p ON ap.id_partido = p.id_partido
+        JOIN zonas z ON ap.id_zona = z.id_zona
+        JOIN areas ar ON ap.id_area = ar.id_area
+        JOIN asientos asi ON ap.id_asiento = asi.id_asiento
+        WHERE b.id_usuario = ?
+        ORDER BY b.fecha DESC
+    `;
+    db.query(sql, [id], (err, data) => {
+        if (err) {
+            console.error("Error al obtener boletos del usuario:", err);
+            return res.status(500).json({ error: "Error al obtener boletos" });
+        }
+        return res.json({ success: true, boletos: data });
+    });
+});
+
 app.listen(8081, () => {
     console.log("Servidor escuchando en el puerto 8081");
 });
