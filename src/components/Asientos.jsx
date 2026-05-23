@@ -54,7 +54,31 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
 
     useEffect(() => {
         fetchAsientos();
+
+        // Configurar un intervalo para refrescar los asientos constantemente cada 5 segundos
+        const intervalo = setInterval(() => {
+            fetchAsientos();
+        }, 5000);
+
+        return () => clearInterval(intervalo);
     }, [selectedMatch, selectedSeat]);
+
+    // Remover de la selección local los asientos que hayan sido reservados/comprados por otros usuarios
+    useEffect(() => {
+        if (!temporizadorActivo && asientosDb.length > 0) {
+            setSeleccionados(prev => {
+                if (prev.length === 0) return prev;
+                const nuevosSeleccionados = prev.filter(id => {
+                    const seatDb = asientosDb.find(a => a.nomenclatura === id);
+                    return seatDb && seatDb.estado === 'activo';
+                });
+                if (nuevosSeleccionados.length !== prev.length) {
+                    return nuevosSeleccionados;
+                }
+                return prev;
+            });
+        }
+    }, [asientosDb, temporizadorActivo]);
 
     const handleCancelarReserva = async (asientosALiberar = seleccionados) => {
         if (asientosALiberar.length === 0) return;
@@ -340,7 +364,7 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
                                         </button>
                                         <button 
                                             className="btn-cancelar" 
-                                            onClick={handleCancelarReserva}
+                                            onClick={() => handleCancelarReserva()}
                                         >
                                             Cancelar
                                         </button>
