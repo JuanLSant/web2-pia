@@ -371,3 +371,126 @@
         margin-bottom: 30px;
     }
 }
+
+/* --- Modal de Pago --- */
+.payment-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.payment-modal-card {
+    background: #1f2937;
+    border: 1px solid #374151;
+    border-radius: 20px;
+    padding: 30px 40px;
+    text-align: center;
+    width: 90%;
+    max-width: 420px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
+    color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    animation: modal-appear 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes modal-appear {
+    from {
+        opacity: 0;
+        transform: scale(0.95) translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+.payment-modal-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #f39c12;
+    margin-bottom: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.payment-modal-summary {
+    background: #111827;
+    border-radius: 12px;
+    padding: 15px;
+    border: 1px solid #374151;
+    text-align: left;
+    font-size: 0.95rem;
+}
+
+.payment-modal-summary p {
+    margin: 5px 0;
+    display: flex;
+    justify-content: space-between;
+    color: #9ca3af;
+}
+
+.payment-modal-summary .total {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #f39c12;
+    border-top: 1px dashed #374151;
+    padding-top: 10px;
+    margin-top: 10px;
+}
+
+.payment-modal-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+}
+
+.payment-modal-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+}
+
+.btn-modal-back {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.05);
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-modal-back:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-modal-cancel {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #e74c3c;
+    color: #fff;
+    font-weight: bold;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-modal-cancel:hover {
+    background: #c0392b;
+}

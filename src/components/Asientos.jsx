@@ -100,16 +100,17 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
                     nomenclaturas: asientosALiberar
                 })
             });
-            if (response.ok) {
-                setSeleccionados([]);
-                setTemporizadorActivo(false);
-                setTiempoRestante(300);
-                await fetchAsientos();
-            } else {
+            if (!response.ok) {
                 console.error("No se pudieron liberar los asientos en la base de datos.");
             }
         } catch (err) {
             console.error("Error al liberar asientos:", err);
+        } finally {
+            setSeleccionados([]);
+            setTemporizadorActivo(false);
+            setTiempoRestante(300);
+            setMostrandoMetodosPago(false);
+            await fetchAsientos();
         }
     };
 
@@ -157,10 +158,12 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
             if (response.ok && data.success) {
                 setTemporizadorActivo(true);
                 setTiempoRestante(300);
+                setMostrandoMetodosPago(false);
                 await fetchAsientos();
             } else {
                 alert(data.error || "No se pudieron reservar los asientos. Intenta de nuevo.");
                 setSeleccionados([]);
+                setMostrandoMetodosPago(false);
                 await fetchAsientos();
             }
         } catch (err) {
@@ -203,6 +206,7 @@ const handleFinalizarCompra = async () => {
                 setSeleccionados([]);
                 setTemporizadorActivo(false);
                 setTiempoRestante(300);
+                setMostrandoMetodosPago(false);
                 setPage('inicio');
             });
         } else {
@@ -412,45 +416,12 @@ const getPaymentRequest = () => ({
 
     {temporizadorActivo ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
-            {mostrandoMetodosPago ? (
-                <div className="metodos-pago" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                    <PayPalButtons
-                        style={{ layout: "vertical", color: "blue", shape: "rect", label: "pay" }}
-                        createOrder={(data, actions) => {
-                            return actions.order.create({
-                                purchase_units: [{
-                                    description: `Boletos Mundial 2026 - ${selectedMatch.titulo}`,
-                                    amount: {
-                                        currency_code: "MXN",
-                                        value: (seleccionados.length * precio).toString()
-                                    }
-                                }]
-                            });
-                        }}
-                        onApprove={async (data, actions) => {
-                            const order = await actions.order.capture();
-                            handleFinalizarCompra();
-                        }}
-                    />
-
-                    {/* Botón de Google Pay con la librería */}
-                    <GooglePayButton
-                        environment="TEST"
-                        paymentRequest={getPaymentRequest()}
-                        onLoadPaymentData={paymentData => {
-                            console.log("Pago exitoso con Google Pay:", paymentData);
-                            handleFinalizarCompra();
-                        }}
-                    />
-                </div>
-            ) : (
-                <button 
-                    className="btn-finalizar" 
-                    onClick={() => setMostrandoMetodosPago(true)} 
-                >
-                    Finalizar compra
-                </button>
-            )}
+            <button 
+                className="btn-finalizar" 
+                onClick={() => setMostrandoMetodosPago(true)} 
+            >
+                Finalizar compra
+            </button>
             <button 
                 className="btn-cancelar" 
                 onClick={() => handleCancelarReserva()}
@@ -474,6 +445,80 @@ const getPaymentRequest = () => ({
 
                 </div>
             </div>
+
+            {/* Modal de Pago */}
+            {mostrandoMetodosPago && (
+                <div className="payment-modal-overlay">
+                    <div className="payment-modal-card">
+                        <div className="payment-modal-title">Método de Pago</div>
+                        <p style={{ color: '#9ca3af', fontSize: '0.9rem', margin: 0 }}>
+                            Completa el pago de tus boletos reservados
+                        </p>
+                        
+                        <div className="payment-modal-summary">
+                            <p>
+                                <span>Zona:</span>
+                                <span style={{ textTransform: 'capitalize', color: '#fff', fontWeight: 'bold' }}>
+                                    {selectedSeat.zona.replace('-', ' ')}
+                                </span>
+                            </p>
+                            <p>
+                                <span>Área:</span>
+                                <span style={{ color: '#fff', fontWeight: 'bold' }}>{selectedSeat.id}</span>
+                            </p>
+                            <p>
+                                <span>Asientos ({seleccionados.length}):</span>
+                                <span style={{ color: '#fff', fontWeight: 'bold', maxWidth: '180px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={seleccionados.join(', ')}>
+                                    {seleccionados.join(', ')}
+                                </span>
+                            </p>
+                            <div className="total">
+                                <span>Total:</span>
+                                <span>${seleccionados.length * precio} MXN</span>
+                            </div>
+                        </div>
+
+                        <div className="payment-modal-buttons">
+                            <PayPalButtons
+                                style={{ layout: "vertical", color: "blue", shape: "rect", label: "pay" }}
+                                createOrder={(data, actions) => {
+                                    return actions.order.create({
+                                        purchase_units: [{
+                                            description: `Boletos Mundial 2026 - ${selectedMatch?.titulo}`,
+                                            amount: {
+                                                currency_code: "MXN",
+                                                value: (seleccionados.length * precio).toString()
+                                            }
+                                        }]
+                                    });
+                                }}
+                                onApprove={async (data, actions) => {
+                                    await actions.order.capture();
+                                    handleFinalizarCompra();
+                                }}
+                            />
+
+                            <GooglePayButton
+                                environment="TEST"
+                                paymentRequest={getPaymentRequest()}
+                                onLoadPaymentData={paymentData => {
+                                    console.log("Pago exitoso con Google Pay:", paymentData);
+                                    handleFinalizarCompra();
+                                }}
+                            />
+                        </div>
+
+                        <div className="payment-modal-actions">
+                            <button className="btn-modal-back" onClick={() => setMostrandoMetodosPago(false)}>
+                                Volver
+                            </button>
+                            <button className="btn-modal-cancel" onClick={() => handleCancelarReserva()}>
+                                Cancelar Reserva
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
