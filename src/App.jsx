@@ -19,6 +19,8 @@ import './styles/inicio.css'
 import './styles/asientos.css'
 import './styles/Login.css'
 
+import { PayPalScriptProvider } from "@paypal/react-paypal-js";
+
 function App() {
   const [user, setUser] = useState(() => {
     try {
@@ -72,17 +74,27 @@ function App() {
     setSelectedMatch(nuevoPartido)
   }
 
-  if (user === null) {
-    return esRegistro
-      ? <Registro setEsRegistro={setEsRegistro} setUser={handleSetUser} />
-      : <Login setUser={handleSetUser} setEsRegistro={setEsRegistro} />
-  }
-
-  if (page === 'perfil') return <User user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'asientos') return <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
-  if (page === 'ayuda') return <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />
-  if (page === 'zona') return <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />
-  return <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={handleSetSelectedMatch} />
+return (
+    <PayPalScriptProvider options={{ 
+    "client-id": "AVstGf4j0ILHe7TUdgNuASvwoS3Fc-qjvCKJCkQcebqFVNPjMkV5a_GR8NkuYvTrsXoZglLcs_fLLnpc", 
+    "currency": "MXN",  
+    "environment": "sandbox"
+}}>
+      {user === null ? (
+        esRegistro
+          ? <Registro setEsRegistro={setEsRegistro} setUser={handleSetUser} />
+          : <Login setUser={handleSetUser} setEsRegistro={setEsRegistro} />
+      ) : (
+        <>
+          {page === 'perfil' && <User user={user} setUser={handleSetUser} setPage={handleSetPage} />}
+          {page === 'asientos' && <Asientos user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />}
+          {page === 'ayuda' && <Ayuda user={user} setUser={handleSetUser} setPage={handleSetPage} />}
+          {page === 'zona' && <Zona user={user} setUser={handleSetUser} setPage={handleSetPage} selectedMatch={selectedMatch} />}
+          {page === 'inicio' && <Inicio user={user} setUser={handleSetUser} setPage={handleSetPage} setSelectedMatch={handleSetSelectedMatch} />}
+        </>
+      )}
+    </PayPalScriptProvider>
+  )
 }
 
 export default App

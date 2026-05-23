@@ -1,4 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
+import { PayPalButtons } from "@paypal/react-paypal-js";
+import Swal from 'sweetalert2';
+import GooglePayButton from '@google-pay/button-react';
 
 const costosZona = {
     'zona-1': 5000,
@@ -8,8 +11,12 @@ const costosZona = {
 };
 
 function Asientos({ user, setUser, setPage, selectedMatch }) {
+
+    const [mostrandoMetodosPago, setMostrandoMetodosPago] = useState(false);
+
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
+    //const containerRef = useRef(null);
 
     // ── Estados de SeleccionAsientos ──────────────────────────────
     const [selectedSeat] = useState(() => {
@@ -162,37 +169,58 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
         }
     };
 
-    const handleFinalizarCompra = async () => {
-        if (seleccionados.length === 0) return;
-        try {
-            const totalCompra = seleccionados.length * precio;
-            const response = await fetch('http://localhost:8081/comprar-asientos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    id_partido: selectedMatch.id_partido,
-                    zona: selectedSeat.zona,
-                    area: selectedSeat.id,
-                    nomenclaturas: seleccionados,
-                    id_usuario: user.id_usuario,
-                    total: totalCompra
-                })
-            });
-            const data = await response.json();
-            if (response.ok && data.success) {
-                alert(`¡Asientos confirmados con éxito! Total a pagar: $${totalCompra}`);
+
+const handleFinalizarCompra = async () => {
+    if (seleccionados.length === 0) return;
+
+    try {
+        const totalCompra = seleccionados.length * precio;
+        
+        const response = await fetch('http://localhost:8081/comprar-asientos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                id_partido: selectedMatch.id_partido,
+                zona: selectedSeat.zona,
+                area: selectedSeat.id,
+                nomenclaturas: seleccionados,
+                id_usuario: user.id_usuario,
+                total: totalCompra,
+                correo: user.correo
+            })
+        });
+
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+            Swal.fire({
+                icon: 'success',
+                title: '¡Compra confirmada!',
+                text: `Se ha enviado un correo de confirmación.`,
+                confirmButtonText: 'Aceptar',
+                confirmButtonColor: '#3085d6'
+            }).then(() => {
                 setSeleccionados([]);
                 setTemporizadorActivo(false);
                 setTiempoRestante(300);
                 setPage('inicio');
-            } else {
-                alert(data.error || "No se pudo finalizar la compra. Intenta de nuevo.");
-            }
-        } catch (err) {
-            console.error("Error al comprar asientos:", err);
-            alert("Error al conectar con el servidor. Intenta de nuevo.");
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error en la compra',
+                text: data.error || "No se pudo finalizar la compra. Intenta de nuevo."
+            });
         }
-    };
+    } catch (err) {
+        console.error("Error al comprar asientos:", err);
+        Swal.fire({
+            icon: 'error',
+            title: 'Error de servidor',
+            text: "No se pudo conectar con el servidor. Intenta de nuevo."
+        });
+    }
+};
 
     const navegarAPagina = async (nuevaPagina) => {
         if (temporizadorActivo) {
@@ -202,6 +230,33 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
         }
         setPage(nuevaPagina);
     };
+
+
+const getPaymentRequest = () => ({
+    apiVersion: 2,
+    apiVersionMinor: 0,
+    allowedPaymentMethods: [{
+        type: 'CARD',
+        parameters: {
+            allowedAuthMethods: ['PAN_ONLY', 'CRYPTOGRAM_3DS'],
+            allowedCardNetworks: ['VISA', 'MASTERCARD']
+        },
+        tokenizationSpecification: {
+            type: 'PAYMENT_GATEWAY',
+            parameters: {
+                'gateway': 'example',
+                'gatewayMerchantId': 'exampleMerchantId'
+            }
+        }
+    }],
+    merchantInfo: { merchantName: 'Mundial 2026' },
+    transactionInfo: {
+        totalPriceStatus: 'FINAL',
+        totalPrice: (seleccionados.length * precio).toString(),
+        currencyCode: 'MXN',
+        countryCode: 'MX'
+    }
+});
 
     // ─────────────────────────────────────────────────────────────
 
@@ -333,52 +388,86 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
                                 </div>
                             </div>
 
-                            <aside className="panel-pago">
-                                <h3>Resumen de Compra</h3>
-                                <div className="detalle">
-                                    <p>
-                                        <span style={{ textTransform: 'capitalize' }}>
-                                            {selectedSeat.zona.replace('-', ' ')}
-                                        </span>
-                                        {` - Area: ${selectedSeat.id} - Estadio BBVA`}
-                                    </p>
-                                    <p>Asientos: {seleccionados.length}</p>
-                                    {seleccionados.map(id => (
-                                        <div key={id} className="ticket-item">
-                                            <span>Asiento {id}</span>
-                                            <span>${precio}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                                <div className="total-pago">
-                                    <span>Total:</span>
-                                    <span>${seleccionados.length * precio}</span>
-                                </div>
-                                {temporizadorActivo ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
-                                        <button 
-                                            className="btn-finalizar" 
-                                            onClick={handleFinalizarCompra}
-                                        >
-                                            Finalizar compra
-                                        </button>
-                                        <button 
-                                            className="btn-cancelar" 
-                                            onClick={() => handleCancelarReserva()}
-                                        >
-                                            Cancelar
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <button 
-                                        className="btn-siguiente" 
-                                        disabled={seleccionados.length === 0}
-                                        onClick={handleConfirmarAsientos}
-                                    >
-                                        Confirmar asientos
-                                    </button>
-                                )}
-                            </aside>
+                           <aside className="panel-pago">
+    <h3>Resumen de Compra</h3>
+    <div className="detalle">
+        <p>
+            <span style={{ textTransform: 'capitalize' }}>
+                {selectedSeat.zona.replace('-', ' ')}
+            </span>
+            {` - Area: ${selectedSeat.id} - Estadio BBVA`}
+        </p>
+        <p>Asientos: {seleccionados.length}</p>
+        {seleccionados.map(id => (
+            <div key={id} className="ticket-item">
+                <span>Asiento {id}</span>
+                <span>${precio}</span>
+            </div>
+        ))}
+    </div>
+    <div className="total-pago">
+        <span>Total:</span>
+        <span>${seleccionados.length * precio}</span>
+    </div>
+
+    {temporizadorActivo ? (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', width: '100%' }}>
+            {mostrandoMetodosPago ? (
+                <div className="metodos-pago" style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                    <PayPalButtons
+                        style={{ layout: "vertical", color: "blue", shape: "rect", label: "pay" }}
+                        createOrder={(data, actions) => {
+                            return actions.order.create({
+                                purchase_units: [{
+                                    description: `Boletos Mundial 2026 - ${selectedMatch.titulo}`,
+                                    amount: {
+                                        currency_code: "MXN",
+                                        value: (seleccionados.length * precio).toString()
+                                    }
+                                }]
+                            });
+                        }}
+                        onApprove={async (data, actions) => {
+                            const order = await actions.order.capture();
+                            handleFinalizarCompra();
+                        }}
+                    />
+
+                    {/* Botón de Google Pay con la librería */}
+                    <GooglePayButton
+                        environment="TEST"
+                        paymentRequest={getPaymentRequest()}
+                        onLoadPaymentData={paymentData => {
+                            console.log("Pago exitoso con Google Pay:", paymentData);
+                            handleFinalizarCompra();
+                        }}
+                    />
+                </div>
+            ) : (
+                <button 
+                    className="btn-finalizar" 
+                    onClick={() => setMostrandoMetodosPago(true)} 
+                >
+                    Finalizar compra
+                </button>
+            )}
+            <button 
+                className="btn-cancelar" 
+                onClick={() => handleCancelarReserva()}
+            >
+                Cancelar
+            </button>
+        </div>
+    ) : (
+        <button 
+            className="btn-siguiente" 
+            disabled={seleccionados.length === 0}
+            onClick={handleConfirmarAsientos}
+        >
+            Confirmar asientos
+        </button>
+    )}
+</aside>
                         </div>
                     </main>
                     {/* ─────────────────────────────────── */}

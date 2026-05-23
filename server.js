@@ -3,6 +3,7 @@ import mysql from 'mysql2';
 import cors from 'cors';
 import fs from 'fs';
 import path from 'path';
+import nodemailer from 'nodemailer';
 
 const app = express();
 app.use(cors());
@@ -13,9 +14,9 @@ app.use('/uploads', express.static('uploads'));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '12345', 
+    password: '', 
     database: 'mundial_mexico',
-    port: 3306 
+    port: 3307
 });
 
 db.connect((err) => {
@@ -332,7 +333,9 @@ app.post('/liberar-asientos', (req, res) => {
 });
 
 app.post('/comprar-asientos', (req, res) => {
-    const { id_partido, zona, area, nomenclaturas, id_usuario, total } = req.body;
+    //console.log("CONTENIDO COMPLETO DE REQ.BODY:", JSON.stringify(req.body, null, 2));
+    const { id_partido, zona, area, nomenclaturas, id_usuario, total, correo } = req.body;
+    
     if (!id_partido || !zona || !area || !nomenclaturas || !nomenclaturas.length || !id_usuario || total === undefined) {
         return res.status(400).json({ error: "Faltan parámetros requeridos" });
     }
@@ -346,6 +349,7 @@ app.post('/comprar-asientos', (req, res) => {
         JOIN areas a ON z.id_zona = a.id_zona
         WHERE z.nombre = ? AND a.nomenclatura = ?
     `;
+    
     db.query(sqlGetIDs, [nombreZona, area], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         if (result.length === 0) return res.status(404).json({ error: "Zona o Área no encontrada" });
@@ -364,45 +368,51 @@ app.post('/comprar-asientos', (req, res) => {
                   AND ap.id_area = ? 
                   AND a.nomenclatura IN (?)
             `;
+            
             db.query(sqlSelectAP, [id_partido, id_zona, id_area, nomenclaturas], (errSelect, apRows) => {
-                if (errSelect) {
-                    return db.rollback(() => res.status(500).json({ error: errSelect.message }));
-                }
+                if (errSelect) return db.rollback(() => res.status(500).json({ error: errSelect.message }));
                 
                 if (apRows.length < nomenclaturas.length) {
                     return db.rollback(() => res.status(404).json({ error: "Algunos asientos no están registrados" }));
                 }
                 
                 const apIds = apRows.map(row => row.id);
-                const sqlUpdateAP = `
-                    UPDATE asientos_partido 
-                    SET estado = 'comprado', reservado_hasta = NULL 
-                    WHERE id IN (?)
-                `;
+                const sqlUpdateAP = `UPDATE asientos_partido SET estado = 'comprado', reservado_hasta = NULL WHERE id IN (?)`;
+                
                 db.query(sqlUpdateAP, [apIds], (errUpdate) => {
-                    if (errUpdate) {
-                        return db.rollback(() => res.status(500).json({ error: errUpdate.message }));
-                    }
+                    if (errUpdate) return db.rollback(() => res.status(500).json({ error: errUpdate.message }));
                     
                     const boletoInserts = apIds.map(apId => {
                         const qrCode = `QR_${id_partido}_${id_zona}_${id_area}_${apId}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
                         return [apId, id_usuario, precioUnitario, qrCode];
                     });
                     
-                    const sqlInsertBoletos = `
-                        INSERT INTO boletos (id_asiento_partido, id_usuario, total, codigo_qr) 
-                        VALUES ?
-                    `;
+                    const sqlInsertBoletos = `INSERT INTO boletos (id_asiento_partido, id_usuario, total, codigo_qr) VALUES ?`;
+                    
                     db.query(sqlInsertBoletos, [boletoInserts], (errBoletos) => {
-                        if (errBoletos) {
-                            return db.rollback(() => res.status(500).json({ error: errBoletos.message }));
-                        }
+                        if (errBoletos) return db.rollback(() => res.status(500).json({ error: errBoletos.message }));
                         
                         db.commit((errCommit) => {
-                            if (errCommit) {
-                                return db.rollback(() => res.status(500).json({ error: errCommit.message }));
-                            }
-                            return res.json({ success: true });
+                            if (errCommit) return db.rollback(() => res.status(500).json({ error: errCommit.message }));
+
+
+                            //console.log("DEBUG: Valor del email que llega al servidor:", correo);
+                            const mailOptions = {
+                                from: 'webpagina222@gmail.com',
+                                to: correo, 
+                                subject: 'Confirmación de Compra - Mundial 2026',
+                                text: `¡Felicidades! Tu compra se ha realizado con éxito.`
+                            };
+
+                            transporter.sendMail(mailOptions, (error, info) => {
+                                if (error) {
+                                    console.log("Error al enviar correo:", error);
+                                    return res.json({ success: true, message: "Compra realizada, pero falló el envío del correo" });
+                                } else {
+                                    console.log("Correo enviado: " + info.response);
+                                    return res.json({ success: true });
+                                }
+                            });
                         });
                     });
                 });
@@ -411,6 +421,15 @@ app.post('/comprar-asientos', (req, res) => {
     });
 });
 
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'webpagina222@gmail.com',
+        pass: 'efhfekarspqbpxrq'
+    }
+});
+
 app.listen(8081, () => {
     console.log("Servidor escuchando en el puerto 8081");
 });
+

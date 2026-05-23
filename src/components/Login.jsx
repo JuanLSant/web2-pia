@@ -50,14 +50,13 @@ function Login({ setUser, setEsRegistro }) {
             const data = await response.json();
             console.log("Respuesta del servidor:", data);
 
-            if (data.success) {
-                setError(false);
-                console.log("Datos usuario:", data.usuario);
-                setUser(data.usuario);
-            } else {
-                setError(true);
-                setErrorMessage(data.alerta || "Error en credenciales");
-            }
+            if (data && data.success && data.usuario) {
+            setError(false);
+            setUser(data.usuario); 
+        } else {
+            setError(true);
+            setErrorMessage(data.alerta || "Usuario no encontrado");
+        }
 
         } catch (err) {
             console.log("Error catch:", err);
