@@ -66,3 +66,13 @@ CREATE TABLE boletos (
     FOREIGN KEY (id_asiento_partido) REFERENCES asientos_partido(id),
     FOREIGN KEY (id_usuario) REFERENCES usuarios(id_usuario)
 );
+
+CREATE TABLE recuperacion_codigos (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    correo VARCHAR(100) NOT NULL,
+    codigo VARCHAR(6) NOT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expira_en DATETIME NOT NULL,
+    FOREIGN KEY (correo) REFERENCES usuarios(correo) ON DELETE CASCADE
+);
+
