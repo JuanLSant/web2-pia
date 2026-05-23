@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config';
 import { PayPalButtons } from "@paypal/react-paypal-js";
 import Swal from 'sweetalert2';
 import GooglePayButton from '@google-pay/button-react';
@@ -46,7 +47,7 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
     const fetchAsientos = async () => {
         if (!selectedMatch?.id_partido) return;
         try {
-            const url = `http://localhost:8081/partido-asientos?id_partido=${selectedMatch.id_partido}&zona=${selectedSeat.zona}&area=${selectedSeat.id}`;
+            const url = `${API_BASE_URL}/partido-asientos?id_partido=${selectedMatch.id_partido}&zona=${selectedSeat.zona}&area=${selectedSeat.id}`;
             const response = await fetch(url);
             const data = await response.json();
             if (data.success) {
@@ -90,7 +91,7 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
     const handleCancelarReserva = async (asientosALiberar = seleccionados) => {
         if (asientosALiberar.length === 0) return;
         try {
-            const response = await fetch('http://localhost:8081/liberar-asientos', {
+            const response = await fetch(`${API_BASE_URL}/liberar-asientos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -144,7 +145,7 @@ function Asientos({ user, setUser, setPage, selectedMatch }) {
     const handleConfirmarAsientos = async () => {
         if (seleccionados.length === 0) return;
         try {
-            const response = await fetch('http://localhost:8081/reservar-asientos', {
+            const response = await fetch(`${API_BASE_URL}/reservar-asientos`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -179,7 +180,7 @@ const handleFinalizarCompra = async () => {
     try {
         const totalCompra = seleccionados.length * precio;
         
-        const response = await fetch('http://localhost:8081/comprar-asientos', {
+        const response = await fetch(`${API_BASE_URL}/comprar-asientos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -308,7 +309,7 @@ const getPaymentRequest = () => ({
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
                                 {user.imagen_url ? (
-                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                    <img src={`${API_BASE_URL}/${user.imagen_url}`} alt="Avatar" />
                                 ) : (
                                     user.nombre.charAt(0).toUpperCase()
                                 )}

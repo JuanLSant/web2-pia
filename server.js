@@ -26,11 +26,11 @@ const transporter = nodemailer.createTransport({
 });
 
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '12345',
-    database: 'mundial_mexico',
-    port: 3306
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'root',
+    password: process.env.DB_PASSWORD || '12345',
+    database: process.env.DB_NAME || 'mundial_mexico',
+    port: parseInt(process.env.DB_PORT || '3306')
 });
 
 db.connect((err) => {
@@ -651,7 +651,8 @@ app.post('/ayuda/chat', async (req, res) => {
 
 // Transporter configurado al inicio del archivo
 
-app.listen(8081, () => {
-    console.log("Servidor escuchando en el puerto 8081");
+const PORT = process.env.PORT || 8081;
+app.listen(PORT, () => {
+    console.log(`Servidor escuchando en el puerto ${PORT}`);
 });
 

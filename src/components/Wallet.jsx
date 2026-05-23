@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config';
 
 function Wallet({ user, setUser, setPage }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -38,7 +39,7 @@ function Wallet({ user, setUser, setPage }) {
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
                                 {user.imagen_url ? (
-                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                    <img src={`${API_BASE_URL}/${user.imagen_url}`} alt="Avatar" />
                                 ) : (
                                     user.nombre.charAt(0).toUpperCase()
                                 )}

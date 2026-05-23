@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { API_BASE_URL } from '../config';
 import userRoundIcon from '../assets/user-round.svg';
 import atSignIcon from '../assets/at-sign.svg';
 import lockIcon from '../assets/lock.svg';
@@ -26,7 +27,7 @@ function Registro({ setEsRegistro }) {
         }
 
         try {
-            const response = await fetch('http://localhost:8081/registro', {
+            const response = await fetch(`${API_BASE_URL}/registro`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ nombre, email, password })

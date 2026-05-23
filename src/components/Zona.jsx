@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config';
 import bgWorldCup from '../assets/SC-World-Cup-Off-Plat-copy.webp';
 import flagSurCorea from '../assets/sur corea.jpg';
 import flagJapon from '../assets/japon.png';
@@ -99,7 +100,7 @@ function Zona({ user, setUser, setPage, selectedMatch }) {
                         <div className="avatar-wrapper" ref={dropdownRef}>
                             <div className="avatar-menu" title={user.nombre} onClick={() => setDropdownOpen(prev => !prev)}>
                                 {user.imagen_url ? (
-                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                    <img src={`${API_BASE_URL}/${user.imagen_url}`} alt="Avatar" />
                                 ) : (
                                     user.nombre.charAt(0).toUpperCase()
                                 )}

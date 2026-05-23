@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config';
 import ticketImg from '../assets/ticket-base.svg';
 
 function Welcome({ user, setUser, setPage }) {
@@ -20,7 +21,7 @@ function Welcome({ user, setUser, setPage }) {
 
     useEffect(() => {
         if (user && user.id_usuario) {
-            fetch(`http://localhost:8081/usuario/${user.id_usuario}/boletos`)
+            fetch(`${API_BASE_URL}/usuario/${user.id_usuario}/boletos`)
                 .then(res => res.json())
                 .then(data => {
                     if (data.success) {
@@ -49,7 +50,7 @@ function Welcome({ user, setUser, setPage }) {
             payload.password = datos.password;
         }
 
-        fetch(`http://localhost:8081/usuario/${user.id_usuario}`, {
+        fetch(`${API_BASE_URL}/usuario/${user.id_usuario}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
@@ -91,7 +92,7 @@ function Welcome({ user, setUser, setPage }) {
     const handleSubirImagen = () => {
         if (!imagenSeleccionada) return;
 
-        fetch(`http://localhost:8081/usuario/${user.id_usuario}/imagen`, {
+        fetch(`${API_BASE_URL}/usuario/${user.id_usuario}/imagen`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ imagen: imagenSeleccionada })
@@ -139,7 +140,7 @@ function Welcome({ user, setUser, setPage }) {
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
                                 {user.imagen_url ? (
-                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                    <img src={`${API_BASE_URL}/${user.imagen_url}`} alt="Avatar" />
                                 ) : (
                                     user.nombre.charAt(0).toUpperCase()
                                 )}
@@ -168,7 +169,7 @@ function Welcome({ user, setUser, setPage }) {
                     <form className='form-datauser' onSubmit={e => e.preventDefault()}>
                         <div className="section-top-center">
                             <div className="container-image" onClick={() => setModalAbierto(true)} style={{ cursor: 'pointer' }}>
-                                <img src={user.imagen_url ? `http://localhost:8081/${user.imagen_url}` : 'src/assets/user-t.jpg'} alt="Perfil" />
+                                <img src={user.imagen_url ? `${API_BASE_URL}/${user.imagen_url}` : 'src/assets/user-t.jpg'} alt="Perfil" />
                             </div>
                         </div>
                         <div className="section-middle-center">

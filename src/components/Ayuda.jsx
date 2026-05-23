@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { API_BASE_URL } from '../config';
 import '../styles/ayuda.css';
 
 const faqsData = [
@@ -138,7 +139,7 @@ function Ayuda({ user, setUser, setPage }) {
         setIsTyping(true);
 
         try {
-            const response = await fetch('http://localhost:8081/ayuda/chat', {
+            const response = await fetch(`${API_BASE_URL}/ayuda/chat`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -205,7 +206,7 @@ function Ayuda({ user, setUser, setPage }) {
                                 onClick={() => setDropdownOpen(prev => !prev)}
                             >
                                 {user.imagen_url ? (
-                                    <img src={`http://localhost:8081/${user.imagen_url}`} alt="Avatar" />
+                                    <img src={`${API_BASE_URL}/${user.imagen_url}`} alt="Avatar" />
                                 ) : (
                                     user.nombre.charAt(0).toUpperCase()
                                 )}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { API_BASE_URL } from '../config';
 import userRoundIcon from '../assets/user-round.svg';
 import lockIcon from '../assets/lock.svg';
 import atSignIcon from '../assets/at-sign.svg';
@@ -35,10 +36,10 @@ function Login({ setUser, setEsRegistro }) {
 
         const delayDebounceFn = setTimeout(async () => {
             try {
-                const response = await fetch(`http://localhost:8081/usuario-avatar/${encodeURIComponent(username.trim())}`);
+                const response = await fetch(`${API_BASE_URL}/usuario-avatar/${encodeURIComponent(username.trim())}`);
                 const data = await response.json();
                 if (data.success && data.imagen_url) {
-                    setAvatarUrl(`http://localhost:8081/${data.imagen_url}`);
+                    setAvatarUrl(`${API_BASE_URL}/${data.imagen_url}`);
                 } else {
                     setAvatarUrl(null);
                 }
@@ -59,7 +60,7 @@ function Login({ setUser, setEsRegistro }) {
             return;
         }
         try {
-            const response = await fetch('http://localhost:8081/login', {
+            const response = await fetch(`${API_BASE_URL}/login`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: username, password: password })
@@ -100,7 +101,7 @@ function Login({ setUser, setEsRegistro }) {
             return;
         }
         try {
-            const response = await fetch('http://localhost:8081/recuperar-password', {
+            const response = await fetch(`${API_BASE_URL}/recuperar-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: recoveryEmail })
@@ -128,7 +129,7 @@ function Login({ setUser, setEsRegistro }) {
             return;
         }
         try {
-            const response = await fetch('http://localhost:8081/restablecer-password', {
+            const response = await fetch(`${API_BASE_URL}/restablecer-password`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
