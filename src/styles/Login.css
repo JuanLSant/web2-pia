@@ -305,6 +305,66 @@
     border: 1px solid rgba(255, 100, 100, 0.25);
 }
 
+.login-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 12px 0 18px;
+    font-size: 0.83rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.remember-me input[type="checkbox"] {
+    accent-color: #38f9d7;
+    cursor: pointer;
+    width: 14px;
+    height: 14px;
+    margin: 0;
+}
+
+.forgot-password-link {
+    color: #38f9d7;
+    cursor: pointer;
+    font-weight: 500;
+    transition: color 0.2s;
+}
+
+.forgot-password-link:hover {
+    color: #43e97b;
+    text-decoration: underline;
+}
+
+.success-message {
+    color: #a8ffb2;
+    background-color: rgba(40, 255, 100, 0.1);
+    padding: 11px 14px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.83rem;
+    margin-top: 12px;
+    border: 1px solid rgba(80, 255, 120, 0.25);
+}
+
+.success-message-info {
+    color: #38f9d7;
+    background-color: rgba(56, 249, 215, 0.05);
+    padding: 10px 14px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 0.8rem;
+    margin-bottom: 16px;
+    border: 1px dashed rgba(56, 249, 215, 0.25);
+}
+
+
 .register-row {
     text-align: center;
     font-size: 0.85rem;
