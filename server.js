@@ -14,9 +14,9 @@ app.use('/uploads', express.static('uploads'));
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
-    password: '', 
+    password: '12345',
     database: 'mundial_mexico',
-    port: 3307
+    port: 3306
 });
 
 db.connect((err) => {
@@ -48,7 +48,7 @@ app.post('/registro', (req, res) => {
     const { nombre, email, password } = req.body;
     const sql = "INSERT INTO usuarios (nombre, correo, password) VALUES (?, ?, ?)";
     db.query(sql, [nombre, email, password], (err, result) => {
-        if(err) return res.status(500).json({ error: "Error al registrar usuario" });
+        if (err) return res.status(500).json({ error: "Error al registrar usuario" });
         return res.json("Success");
     });
 });
@@ -56,7 +56,7 @@ app.post('/registro', (req, res) => {
 app.put('/usuario/:id', (req, res) => {
     const { id } = req.params;
     const { nombre, password } = req.body;
-    
+
     let sql;
     let params;
     if (password && password.trim() !== '') {
@@ -153,14 +153,14 @@ const initializeSeats = (id_partido, id_zona, id_area, callback) => {
             nomenclaturas.push([`${i}-${j}`]);
         }
     }
-    
+
     const sqlAsientos = "INSERT IGNORE INTO asientos (nomenclatura) VALUES ?";
     db.query(sqlAsientos, [nomenclaturas], (err) => {
         if (err) {
             console.error("Error al poblar tabla asientos:", err);
             return callback(err);
         }
-        
+
         const sqlAsientosPartido = `
             INSERT IGNORE INTO asientos_partido (id_partido, id_zona, id_area, id_asiento, estado, reservado_hasta)
             SELECT ?, ?, ?, id_asiento, 'activo', NULL FROM asientos
@@ -179,14 +179,14 @@ app.get('/partido-asientos', (req, res) => {
     }
 
     const nombreZona = mapZonaName(zona);
-    
+
     db.query("SELECT id_zona FROM zonas WHERE nombre = ?", [nombreZona], (err, zonasData) => {
         if (err) return res.status(500).json({ error: err.message });
-        
+
         const runQuery = (id_zona_val) => {
             db.query("SELECT id_area FROM areas WHERE id_zona = ? AND nomenclatura = ?", [id_zona_val, area], (err, areasData) => {
                 if (err) return res.status(500).json({ error: err.message });
-                
+
                 const fetchSeatsData = (id_area_val) => {
                     // Limpiar reservas expiradas
                     const sqlLimpiar = `
@@ -199,7 +199,7 @@ app.get('/partido-asientos', (req, res) => {
                     `;
                     db.query(sqlLimpiar, [id_partido], (errLimpiar) => {
                         if (errLimpiar) console.error("Error al limpiar reservas expiradas:", errLimpiar);
-                        
+
                         const queryAsientos = `
                             SELECT a.nomenclatura, ap.estado, ap.reservado_hasta 
                             FROM asientos_partido ap
@@ -208,15 +208,15 @@ app.get('/partido-asientos', (req, res) => {
                         `;
                         db.query(queryAsientos, [id_partido, id_zona_val, id_area_val], (errFetch, asientosData) => {
                             if (errFetch) return res.status(500).json({ error: errFetch.message });
-                            
+
                             if (asientosData.length === 96) {
                                 return res.json({ success: true, asientos: asientosData });
                             }
-                            
+
                             // Si no están inicializados los 96 asientos, los creamos
                             initializeSeats(id_partido, id_zona_val, id_area_val, (errInit) => {
                                 if (errInit) return res.status(500).json({ error: "No se pudo inicializar los asientos" });
-                                
+
                                 db.query(queryAsientos, [id_partido, id_zona_val, id_area_val], (errFetch2, nuevosAsientosData) => {
                                     if (errFetch2) return res.status(500).json({ error: errFetch2.message });
                                     return res.json({ success: true, asientos: nuevosAsientosData });
@@ -253,9 +253,9 @@ app.post('/reservar-asientos', (req, res) => {
     if (!id_partido || !zona || !area || !nomenclaturas || !nomenclaturas.length) {
         return res.status(400).json({ error: "Faltan parámetros requeridos" });
     }
-    
+
     const nombreZona = mapZonaName(zona);
-    
+
     const sqlGetIDs = `
         SELECT z.id_zona, a.id_area 
         FROM zonas z
@@ -265,9 +265,9 @@ app.post('/reservar-asientos', (req, res) => {
     db.query(sqlGetIDs, [nombreZona, area], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         if (result.length === 0) return res.status(404).json({ error: "Zona o Área no encontrada" });
-        
+
         const { id_zona, id_area } = result[0];
-        
+
         // Reservar los asientos que estén actualmente en estado 'activo'
         const sqlUpdate = `
             UPDATE asientos_partido ap
@@ -281,15 +281,15 @@ app.post('/reservar-asientos', (req, res) => {
         `;
         db.query(sqlUpdate, [id_partido, id_zona, id_area, nomenclaturas], (errUpdate, resultUpdate) => {
             if (errUpdate) return res.status(500).json({ error: errUpdate.message });
-            
+
             // Si la cantidad de filas afectadas es menor, algún asiento ya no estaba 'activo'
             if (resultUpdate.affectedRows < nomenclaturas.length) {
-                return res.status(409).json({ 
-                    success: false, 
-                    error: "Uno o más asientos seleccionados ya no están disponibles. Por favor, vuelve a intentar." 
+                return res.status(409).json({
+                    success: false,
+                    error: "Uno o más asientos seleccionados ya no están disponibles. Por favor, vuelve a intentar."
                 });
             }
-            
+
             return res.json({ success: true });
         });
     });
@@ -300,9 +300,9 @@ app.post('/liberar-asientos', (req, res) => {
     if (!id_partido || !zona || !area || !nomenclaturas || !nomenclaturas.length) {
         return res.status(400).json({ error: "Faltan parámetros requeridos" });
     }
-    
+
     const nombreZona = mapZonaName(zona);
-    
+
     const sqlGetIDs = `
         SELECT z.id_zona, a.id_area 
         FROM zonas z
@@ -312,9 +312,9 @@ app.post('/liberar-asientos', (req, res) => {
     db.query(sqlGetIDs, [nombreZona, area], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         if (result.length === 0) return res.status(404).json({ error: "Zona o Área no encontrada" });
-        
+
         const { id_zona, id_area } = result[0];
-        
+
         const sqlUpdate = `
             UPDATE asientos_partido ap
             JOIN asientos a ON ap.id_asiento = a.id_asiento
@@ -335,30 +335,30 @@ app.post('/liberar-asientos', (req, res) => {
 app.post('/comprar-asientos', (req, res) => {
     //console.log("CONTENIDO COMPLETO DE REQ.BODY:", JSON.stringify(req.body, null, 2));
     const { id_partido, zona, area, nomenclaturas, id_usuario, total, correo } = req.body;
-    
+
     if (!id_partido || !zona || !area || !nomenclaturas || !nomenclaturas.length || !id_usuario || total === undefined) {
         return res.status(400).json({ error: "Faltan parámetros requeridos" });
     }
-    
+
     const nombreZona = mapZonaName(zona);
     const precioUnitario = parseFloat(total) / nomenclaturas.length;
-    
+
     const sqlGetIDs = `
         SELECT z.id_zona, a.id_area 
         FROM zonas z
         JOIN areas a ON z.id_zona = a.id_zona
         WHERE z.nombre = ? AND a.nomenclatura = ?
     `;
-    
+
     db.query(sqlGetIDs, [nombreZona, area], (err, result) => {
         if (err) return res.status(500).json({ error: err.message });
         if (result.length === 0) return res.status(404).json({ error: "Zona o Área no encontrada" });
-        
+
         const { id_zona, id_area } = result[0];
-        
+
         db.beginTransaction((errTx) => {
             if (errTx) return res.status(500).json({ error: errTx.message });
-            
+
             const sqlSelectAP = `
                 SELECT ap.id, a.nomenclatura 
                 FROM asientos_partido ap
@@ -368,30 +368,30 @@ app.post('/comprar-asientos', (req, res) => {
                   AND ap.id_area = ? 
                   AND a.nomenclatura IN (?)
             `;
-            
+
             db.query(sqlSelectAP, [id_partido, id_zona, id_area, nomenclaturas], (errSelect, apRows) => {
                 if (errSelect) return db.rollback(() => res.status(500).json({ error: errSelect.message }));
-                
+
                 if (apRows.length < nomenclaturas.length) {
                     return db.rollback(() => res.status(404).json({ error: "Algunos asientos no están registrados" }));
                 }
-                
+
                 const apIds = apRows.map(row => row.id);
                 const sqlUpdateAP = `UPDATE asientos_partido SET estado = 'comprado', reservado_hasta = NULL WHERE id IN (?)`;
-                
+
                 db.query(sqlUpdateAP, [apIds], (errUpdate) => {
                     if (errUpdate) return db.rollback(() => res.status(500).json({ error: errUpdate.message }));
-                    
+
                     const boletoInserts = apIds.map(apId => {
                         const qrCode = `QR_${id_partido}_${id_zona}_${id_area}_${apId}_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
                         return [apId, id_usuario, precioUnitario, qrCode];
                     });
-                    
+
                     const sqlInsertBoletos = `INSERT INTO boletos (id_asiento_partido, id_usuario, total, codigo_qr) VALUES ?`;
-                    
+
                     db.query(sqlInsertBoletos, [boletoInserts], (errBoletos) => {
                         if (errBoletos) return db.rollback(() => res.status(500).json({ error: errBoletos.message }));
-                        
+
                         db.commit((errCommit) => {
                             if (errCommit) return db.rollback(() => res.status(500).json({ error: errCommit.message }));
 
@@ -399,7 +399,7 @@ app.post('/comprar-asientos', (req, res) => {
                             //console.log("DEBUG: Valor del email que llega al servidor:", correo);
                             const mailOptions = {
                                 from: 'webpagina222@gmail.com',
-                                to: correo, 
+                                to: correo,
                                 subject: 'Confirmación de Compra - Mundial 2026',
                                 text: `¡Felicidades! Tu compra se ha realizado con éxito.`
                             };
