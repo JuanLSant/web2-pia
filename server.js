@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config();
+
 import express from 'express';
 import mysql from 'mysql2';
 import cors from 'cors';
@@ -10,6 +13,17 @@ app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use('/uploads', express.static('uploads'));
+
+// Configuración de nodemailer para envío de correos
+const transporter = nodemailer.createTransport({
+    host: process.env.SMTP_HOST || 'smtp.ethereal.email',
+    port: parseInt(process.env.SMTP_PORT || '587'),
+    secure: process.env.SMTP_SECURE === 'true',
+    auth: {
+        user: process.env.SMTP_USER || 'placeholder_user',
+        pass: process.env.SMTP_PASS || 'placeholder_pass',
+    },
+});
 
 const db = mysql.createConnection({
     host: 'localhost',
@@ -52,6 +66,111 @@ app.post('/registro', (req, res) => {
         return res.json("Success");
     });
 });
+
+app.post('/recuperar-password', (req, res) => {
+    const { email } = req.body;
+    if (!email) {
+        return res.status(400).json({ error: "El correo es requerido" });
+    }
+
+    const sqlCheck = "SELECT id_usuario FROM usuarios WHERE correo = ?";
+    db.query(sqlCheck, [email], (err, data) => {
+        if (err) {
+            console.error("Error al buscar usuario:", err);
+            return res.status(500).json({ error: "Error interno del servidor" });
+        }
+
+        if (data.length === 0) {
+            return res.status(404).json({ error: "El correo electrónico no está registrado" });
+        }
+
+        const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+
+        db.query("DELETE FROM recuperacion_codigos WHERE correo = ?", [email], (errDelete) => {
+            if (errDelete) console.error("Error al limpiar códigos anteriores:", errDelete);
+
+            const sqlInsert = "INSERT INTO recuperacion_codigos (correo, codigo, expira_en) VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 15 MINUTE))";
+            db.query(sqlInsert, [email, codigo], async (errInsert) => {
+                if (errInsert) {
+                    console.error("Error al guardar código:", errInsert);
+                    return res.status(500).json({ error: "Error al generar código de verificación" });
+                }
+
+                const mailOptions = {
+                    from: `"Mundial México 2026" <${process.env.SMTP_USER || 'no-reply@mundialmexico.com'}>`,
+                    to: email,
+                    subject: 'Código de Recuperación de Contraseña',
+                    html: `
+                        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 10px; background-color: #ffffff; color: #333333;">
+                            <h2 style="color: #2b7a78; text-align: center; margin-bottom: 20px;">Recuperación de Contraseña</h2>
+                            <p>Hola,</p>
+                            <p>Has solicitado restablecer tu contraseña para tu cuenta del Mundial de la FIFA 2026 México. Utiliza el siguiente código de verificación:</p>
+                            <div style="font-size: 28px; font-weight: bold; text-align: center; margin: 30px 0; letter-spacing: 5px; color: #2b7a78; background-color: #f4f9f9; padding: 15px; border-radius: 8px; border: 1px dashed #2b7a78;">
+                                ${codigo}
+                            </div>
+                            <p>Este código es válido por 15 minutos. Si no realizaste esta solicitud, puedes ignorar este correo de forma segura.</p>
+                            <hr style="border: 0; border-top: 1px solid #eeeeee; margin-top: 30px;" />
+                            <p style="color: #999999; font-size: 11px; text-align: center;">Este es un correo automático, por favor no lo respondas.</p>
+                        </div>
+                    `
+                };
+
+                try {
+                    if (!process.env.SMTP_USER || process.env.SMTP_USER === 'your_email@example.com') {
+                        throw new Error("SMTP no configurado en .env. Se usará fallback de consola.");
+                    }
+                    await transporter.sendMail(mailOptions);
+                    return res.json({ success: true, message: "Código de verificación enviado a tu correo electrónico." });
+                } catch (mailError) {
+                    console.log("\n==================================================");
+                    console.log(`[DESARROLLO] Código de verificación generado para: ${email}`);
+                    console.log(`CÓDIGO: ${codigo}`);
+                    console.log("==================================================\n");
+
+                    return res.json({
+                        success: true,
+                        message: "Código generado. Al no contar con SMTP configurado, puedes ver el código en la consola del servidor (Node.js).",
+                        desarrollo: true
+                    });
+                }
+            });
+        });
+    });
+});
+
+app.post('/restablecer-password', (req, res) => {
+    const { email, codigo, nuevoPassword } = req.body;
+    if (!email || !codigo || !nuevoPassword) {
+        return res.status(400).json({ error: "Faltan parámetros requeridos (correo, código o nueva contraseña)" });
+    }
+
+    const sqlCheck = "SELECT id FROM recuperacion_codigos WHERE correo = ? AND codigo = ? AND expira_en > NOW()";
+    db.query(sqlCheck, [email, codigo], (err, data) => {
+        if (err) {
+            console.error("Error al validar código:", err);
+            return res.status(500).json({ error: "Error interno al validar el código" });
+        }
+
+        if (data.length === 0) {
+            return res.status(400).json({ error: "El código es incorrecto o ha expirado" });
+        }
+
+        const sqlUpdate = "UPDATE usuarios SET password = ? WHERE correo = ?";
+        db.query(sqlUpdate, [nuevoPassword, email], (errUpdate) => {
+            if (errUpdate) {
+                console.error("Error al actualizar contraseña:", errUpdate);
+                return res.status(500).json({ error: "Error al guardar la nueva contraseña" });
+            }
+
+            db.query("DELETE FROM recuperacion_codigos WHERE correo = ?", [email], (errDelete) => {
+                if (errDelete) console.error("Error al eliminar código usado:", errDelete);
+            });
+
+            return res.json({ success: true, message: "Contraseña actualizada exitosamente." });
+        });
+    });
+});
+
 
 app.put('/usuario/:id', (req, res) => {
     const { id } = req.params;
@@ -419,6 +538,115 @@ app.post('/comprar-asientos', (req, res) => {
             });
         });
     });
+});
+
+app.get('/usuario/:id/boletos', (req, res) => {
+    const { id } = req.params;
+    const sql = `
+        SELECT 
+            b.id_boleto,
+            b.total,
+            DATE_FORMAT(b.fecha, '%Y-%m-%d %H:%i:%s') AS fecha,
+            p.estadio,
+            p.casa,
+            p.visitante,
+            z.nombre AS zona_nombre,
+            ar.nomenclatura AS area_nomenclatura,
+            asi.nomenclatura AS asiento_nomenclatura
+        FROM boletos b
+        JOIN asientos_partido ap ON b.id_asiento_partido = ap.id
+        JOIN partidos p ON ap.id_partido = p.id_partido
+        JOIN zonas z ON ap.id_zona = z.id_zona
+        JOIN areas ar ON ap.id_area = ar.id_area
+        JOIN asientos asi ON ap.id_asiento = asi.id_asiento
+        WHERE b.id_usuario = ?
+        ORDER BY b.fecha DESC
+    `;
+    db.query(sql, [id], (err, data) => {
+        if (err) {
+            console.error("Error al obtener boletos del usuario:", err);
+            return res.status(500).json({ error: "Error al obtener boletos" });
+        }
+        return res.json({ success: true, boletos: data });
+    });
+});
+
+app.post('/ayuda/chat', async (req, res) => {
+    const { message, history } = req.body;
+    const apiKey = process.env.GEMINI_API_KEY;
+
+    if (!apiKey || apiKey.trim() === '') {
+        return res.json({
+            success: true,
+            reply: "¡Hola! Para que pueda ayudarte con búsquedas en internet, por favor configura la clave `GEMINI_API_KEY` en el archivo `.env` en la raíz de tu servidor con una clave obtenida en Google AI Studio (https://aistudio.google.com/)."
+        });
+    }
+
+    try {
+        const contents = [];
+
+        // Mapear historial al formato de Gemini
+        if (history && history.length > 0) {
+            history.forEach(msg => {
+                contents.push({
+                    role: msg.sender === 'user' ? 'user' : 'model',
+                    parts: [{ text: msg.text }]
+                });
+            });
+        }
+
+        // Agregar mensaje actual del usuario
+        contents.push({
+            role: 'user',
+            parts: [{ text: message }]
+        });
+
+        const requestBody = {
+            contents: contents,
+            tools: [
+                { googleSearch: {} }
+            ],
+            systemInstruction: {
+                parts: [
+                    {
+                        text: "Eres un asistente virtual de ayuda para la aplicación de venta de boletos del Mundial de la FIFA 2026 en México (estadios: Estadio BBVA en Monterrey, Estadio Azteca en CDMX, Estadio Akron en Guadalajara). Ayudas a los usuarios a responder dudas del sistema (como que las reservas expiran en 5 minutos, o cómo ver su QR en 'Mi perfil' -> 'Mis Boletos'). Además, si te preguntan sobre partidos, fechas, estadios o noticias del Mundial, utiliza la búsqueda de Google para dar respuestas reales, verídicas y actualizadas en español de manera amigable y concisa."
+                    }
+                ]
+            }
+        };
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            const errText = await response.text();
+            console.error("Error en respuesta de Gemini API:", errText);
+            throw new Error(`Gemini API error: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        let replyText = "";
+        if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0]) {
+            replyText = data.candidates[0].content.parts[0].text;
+        } else {
+            replyText = "Lo siento, no pude procesar una respuesta en este momento.";
+        }
+
+        return res.json({
+            success: true,
+            reply: replyText
+        });
+
+    } catch (error) {
+        console.error("Error al comunicarse con Gemini API:", error);
+        return res.status(500).json({ error: "Error al procesar el mensaje con la IA" });
+    }
 });
 
 const transporter = nodemailer.createTransport({
