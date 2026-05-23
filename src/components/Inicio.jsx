@@ -1,9 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
- 
+
 function Inicio({ user, setUser, setPage, setSelectedMatch }) {
     const [dropdownOpen, setDropdownOpen] = useState(false);
     const dropdownRef = useRef(null);
- 
+
     useEffect(() => {
         const handleClickOutside = (e) => {
             if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -13,12 +13,12 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
         document.addEventListener('mousedown', handleClickOutside);
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
- 
+
     const handleCerrarSesion = () => {
         setUser(null);
         setDropdownOpen(false);
     };
- 
+
     return (
         <div className="background-page">
             <footer className='bar-menu'>
@@ -43,19 +43,19 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                                     user.nombre.charAt(0).toUpperCase()
                                 )}
                             </div>
-                                {dropdownOpen && (
-                                    <div className="dropdown-menu">
-                                        <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
-                                            Wallet
-                                        </button>
-                                        <button className="dropdown-item" onClick={() => { setPage('ayuda'); setDropdownOpen(false); }}>
-                                            Ayuda
-                                        </button>
-                                        <button className="dropdown-item danger" onClick={handleCerrarSesion}>
-                                            Cerrar sesión
-                                        </button>
-                                    </div>
-                                )}
+                            {dropdownOpen && (
+                                <div className="dropdown-menu">
+                                    <button className="dropdown-item" onClick={() => { setPage('wallet'); setDropdownOpen(false); }}>
+                                        Wallet
+                                    </button>
+                                    <button className="dropdown-item" onClick={() => { setPage('ayuda'); setDropdownOpen(false); }}>
+                                        Ayuda
+                                    </button>
+                                    <button className="dropdown-item danger" onClick={handleCerrarSesion}>
+                                        Cerrar sesión
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     ) : (
                         <button className='button-menu' onClick={() => setPage('login')}>Iniciar sesión</button>
@@ -67,7 +67,7 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                     <div className="container-banner-ini-p"></div>
                     <div className="section-banner-ini">
 
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ id_partido: 1, flagLeft: 'src/assets/suecia.jpg', flagRight: 'src/assets/Tunez.jpg', fecha: '14 de Junio (8:00 pm)', titulo: 'Suecia VS Túnez' }); setPage('zona'); }}>
+                        <div className="tarjeta-banner partido-suecia-tunez" onClick={() => { setSelectedMatch({ id_partido: 1, flagLeft: 'src/assets/suecia.jpg', flagRight: 'src/assets/Tunez.jpg', fecha: '14 de Junio (8:00 pm)', titulo: 'Suecia VS Túnez' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/suecia.jpg' />
@@ -84,8 +84,8 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                                 </div>
                             </div>
                         </div>
-                        
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ id_partido: 2, flagLeft: 'src/assets/Tunez.jpg', flagRight: 'src/assets/Japon.png', fecha: '20 de Junio (8:00 pm)', titulo: 'Túnez VS Japón' }); setPage('zona'); }}>
+
+                        <div className="tarjeta-banner partido-tunez-japon" onClick={() => { setSelectedMatch({ id_partido: 2, flagLeft: 'src/assets/Tunez.jpg', flagRight: 'src/assets/Japon.png', fecha: '20 de Junio (8:00 pm)', titulo: 'Túnez VS Japón' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/Tunez.jpg' />
@@ -102,7 +102,8 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
                                 </div>
                             </div>
                         </div>
-                        <div className="tarjeta-banner" onClick={() => { setSelectedMatch({ id_partido: 3, flagLeft: 'src/assets/sudafrica.png', flagRight: 'src/assets/sur corea.jpg', fecha: '24 de Junio (8:00 pm)', titulo: 'Sudáfrica VS Corea del Sur' }); setPage('zona'); }}>
+
+                        <div className="tarjeta-banner partido-sudafrica-corea" onClick={() => { setSelectedMatch({ id_partido: 3, flagLeft: 'src/assets/sudafrica.png', flagRight: 'src/assets/sur corea.jpg', fecha: '24 de Junio (8:00 pm)', titulo: 'Sudáfrica VS Corea del Sur' }); setPage('zona'); }}>
                             <div className="container-banderas">
                                 <div className="bandera">
                                     <img src='src/assets/sudafrica.png' />
@@ -126,5 +127,5 @@ function Inicio({ user, setUser, setPage, setSelectedMatch }) {
         </div>
     );
 }
- 
+
 export default Inicio;
