@@ -16,12 +16,12 @@ app.use('/uploads', express.static('uploads'));
 
 // Configuración de nodemailer para envío de correos
 const transporter = nodemailer.createTransport({
-    host: process.env.SMTP_HOST || 'smtp.ethereal.email',
-    port: parseInt(process.env.SMTP_PORT || '587'),
-    secure: process.env.SMTP_SECURE === 'true',
+    host: process.env.SMTP_HOST || 'smtp.gmail.com',
+    port: parseInt(process.env.SMTP_PORT || '465'),
+    secure: process.env.SMTP_SECURE ? process.env.SMTP_SECURE === 'true' : true,
     auth: {
-        user: process.env.SMTP_USER || 'placeholder_user',
-        pass: process.env.SMTP_PASS || 'placeholder_pass',
+        user: process.env.SMTP_USER || 'webpagina222@gmail.com',
+        pass: process.env.SMTP_PASS || 'efhfekarspqbpxrq',
     },
 });
 
@@ -517,7 +517,7 @@ app.post('/comprar-asientos', (req, res) => {
 
                             //console.log("DEBUG: Valor del email que llega al servidor:", correo);
                             const mailOptions = {
-                                from: 'webpagina222@gmail.com',
+                                from: `"Mundial México 2026" <${process.env.SMTP_USER || 'webpagina222@gmail.com'}>`,
                                 to: correo,
                                 subject: 'Confirmación de Compra - Mundial 2026',
                                 text: `¡Felicidades! Tu compra se ha realizado con éxito.`
@@ -649,13 +649,7 @@ app.post('/ayuda/chat', async (req, res) => {
     }
 });
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-        user: 'webpagina222@gmail.com',
-        pass: 'efhfekarspqbpxrq'
-    }
-});
+// Transporter configurado al inicio del archivo
 
 app.listen(8081, () => {
     console.log("Servidor escuchando en el puerto 8081");
